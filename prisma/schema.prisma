@@ -9,3 +9,166 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  email           String        @unique
+  username        String        @unique
+  password        String
+  display_name    String
+  profile_picture String?
+  preferences     Json
+  address         String?
+  phone           String?
+  bio             String?
+  is_banned       Boolean       @default(false)
+  createdAt       DateTime      @default(now()) @db.Date
+  updatedAt       DateTime      @updatedAt @db.Date
+  Event           Event[]
+  Participant     Participant[]
+}
+
+model Event {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  user        User          @relation(fields: [user_id], references: [id])
+  user_id     String        @db.ObjectId
+  name        String
+  slug        String
+  description String
+  banner      String?
+  gallery     String[]      @default([])
+  price       Float
+  limit       Int
+  is_banned   Boolean       @default(false)
+  publicity   Publicity
+  log         Log[]
+  createdAt   DateTime      @default(now()) @db.Date
+  updatedAt   DateTime      @updatedAt @db.Date
+  Sponsor     Sponsor[]
+  Participant Participant[]
+  Budget      Budget[]
+  Form        Form[]
+}
+
+model Participant {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  event       Event         @relation(fields: [event_id], references: [id])
+  event_id    String        @db.ObjectId
+  user        User          @relation(fields: [user_id], references: [id])
+  user_id     String        @db.ObjectId
+  is_banned   Boolean       @default(false)
+  role        Role
+  ref         String        @unique
+  log         Log[]
+  createdAt   DateTime      @default(now()) @db.Date
+  updatedAt   DateTime      @updatedAt @db.Date
+  Certificate Certificate[]
+}
+
+model Sponsor {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  event       Event    @relation(fields: [event_id], references: [id])
+  event_id    String   @db.ObjectId
+  name        String
+  logo        String?
+  description String
+  log         Log[]
+  createdAt   DateTime @default(now()) @db.Date
+  updatedAt   DateTime @updatedAt @db.Date
+}
+
+model Budget {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  event     Event    @relation(fields: [event_id], references: [id])
+  event_id  String   @db.ObjectId
+  name      String
+  limit     Float
+  current   Float
+  log       Log[]
+  createdAt DateTime @default(now()) @db.Date
+  updatedAt DateTime @updatedAt @db.Date
+}
+
+model Session {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  date      DateTime  @db.Date
+  duration  Int
+  speaker   Speaker[]
+  log       Log[]
+  createdAt DateTime  @default(now()) @db.Date
+  updatedAt DateTime  @updatedAt @db.Date
+}
+
+model Form {
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  event     Event          @relation(fields: [event_id], references: [id])
+  event_id  String         @db.ObjectId
+  name      String
+  fields    Json
+  responses FormResponse[]
+  log       Log[]
+  createdAt DateTime       @default(now()) @db.Date
+  updatedAt DateTime       @updatedAt @db.Date
+}
+
+model Certificate {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  participant    Participant @relation(fields: [participant_id], references: [id])
+  participant_id String      @db.ObjectId
+  objects        Json
+  log            Log[]
+  createdAt      DateTime    @default(now()) @db.Date
+  updatedAt      DateTime    @updatedAt @db.Date
+}
+
+model Transaction {
+  id             String            @id @default(auto()) @map("_id") @db.ObjectId
+  code           String            @unique
+  email          String
+  address        String
+  phone          String
+  country        String
+  status         TransactionStatus
+  payment_method String
+  detail         Json
+  notes          String
+  createdAt      DateTime          @default(now()) @db.Date
+}
+
+type FormResponse {
+  email   String
+  answers Json
+}
+
+type Log {
+  by  String
+  at  String
+  act String
+}
+
+type Speaker {
+  name   String
+  avatar String?
+  role   String?
+}
+
+enum TransactionStatus {
+  failed
+  success
+  pending
+  refunded
+  canceled
+}
+
+enum Role {
+  invited
+  reguler
+  collaborator
+}
+
+enum Publicity {
+  public
+  private
+  registered
+}
