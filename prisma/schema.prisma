@@ -11,19 +11,21 @@ datasource db {
 }
 
 model User {
-  id              String        @id @default(auto()) @map("_id") @db.ObjectId
-  email           String        @unique
-  username        String        @unique
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  email           String         @unique
+  username        String         @unique
   password        String
   display_name    String
   profile_picture String?
   preferences     Json
+  role            Role
   address         String?
   phone           String?
+  notifications   Notification[]
   bio             String?
-  is_banned       Boolean       @default(false)
-  createdAt       DateTime      @default(now()) @db.Date
-  updatedAt       DateTime      @updatedAt @db.Date
+  is_banned       Boolean        @default(false)
+  createdAt       DateTime       @default(now()) @db.Date
+  updatedAt       DateTime       @updatedAt @db.Date
   Event           Event[]
   Participant     Participant[]
 }
@@ -57,12 +59,15 @@ model Participant {
   user        User          @relation(fields: [user_id], references: [id])
   user_id     String        @db.ObjectId
   is_banned   Boolean       @default(false)
-  role        Role
+  role        EventRole
+  access      EventAccess[]
   ref         String        @unique
   log         Log[]
+  preferences Json
   createdAt   DateTime      @default(now()) @db.Date
   updatedAt   DateTime      @updatedAt @db.Date
   Certificate Certificate[]
+  Chat        Chat[]
 }
 
 model Sponsor {
@@ -122,6 +127,16 @@ model Certificate {
   updatedAt      DateTime    @updatedAt @db.Date
 }
 
+model Chat {
+  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  participant    Participant @relation(fields: [participant_id], references: [id])
+  participant_id String      @db.ObjectId
+  content        Json
+  type           ChatType
+  createdAt      DateTime    @default(now()) @db.Date
+  updatedAt      DateTime    @updatedAt @db.Date
+}
+
 model Transaction {
   id             String            @id @default(auto()) @map("_id") @db.ObjectId
   code           String            @unique
@@ -147,6 +162,13 @@ type Log {
   act String
 }
 
+type Notification {
+  content   String
+  url       String?
+  is_read   Boolean  @default(false)
+  createdAt DateTime @db.Date
+}
+
 type Speaker {
   name   String
   avatar String?
@@ -161,10 +183,32 @@ enum TransactionStatus {
   canceled
 }
 
+enum ChatType {
+  basic
+  announcement
+}
+
 enum Role {
+  user
+  admin
+}
+
+enum EventRole {
   invited
   reguler
   collaborator
+  owner
+}
+
+enum EventAccess {
+  session
+  budget
+  chat
+  livestream
+  sponsor
+  form
+  certificate
+  participant
 }
 
 enum Publicity {
