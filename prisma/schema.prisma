@@ -17,13 +17,15 @@ model User {
   password        String
   display_name    String
   profile_picture String?
-  preferences     Json
+  preferences     Json?
   role            Role
   address         String?
   phone           String?
   notifications   Notification[]
   bio             String?
   is_banned       Boolean        @default(false)
+  is_verified     Boolean        @default(false)
+  verify_token    String?
   createdAt       DateTime       @default(now()) @db.Date
   updatedAt       DateTime       @updatedAt @db.Date
   Event           Event[]
@@ -63,7 +65,7 @@ model Participant {
   access      EventAccess[]
   ref         String        @unique
   log         Log[]
-  preferences Json
+  preferences Json?
   createdAt   DateTime      @default(now()) @db.Date
   updatedAt   DateTime      @updatedAt @db.Date
   Certificate Certificate[]
