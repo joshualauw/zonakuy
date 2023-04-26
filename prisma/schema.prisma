@@ -44,6 +44,10 @@ model Event {
   price       Float
   limit       Int
   is_banned   Boolean       @default(false)
+  start_date  DateTime      @db.Date
+  end_date    DateTime      @db.Date
+  location    Location
+  tags        String[]      @default([])
   publicity   Publicity
   log         Log[]
   createdAt   DateTime      @default(now()) @db.Date
@@ -97,14 +101,15 @@ model Budget {
 }
 
 model Session {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  date      DateTime  @db.Date
-  duration  Int
-  speaker   Speaker[]
-  log       Log[]
-  createdAt DateTime  @default(now()) @db.Date
-  updatedAt DateTime  @updatedAt @db.Date
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  day        Int
+  start_time String
+  end_time   String
+  speaker    Speaker[]
+  log        Log[]
+  createdAt  DateTime  @default(now()) @db.Date
+  updatedAt  DateTime  @updatedAt @db.Date
 }
 
 model Form {
@@ -169,6 +174,15 @@ type Notification {
   url       String?
   is_read   Boolean  @default(false)
   createdAt DateTime @db.Date
+}
+
+type Location {
+  coordinate  Float[]
+  country     String
+  city        String
+  street      String
+  venue       String
+  postal_code String
 }
 
 type Speaker {

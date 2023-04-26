@@ -3,7 +3,7 @@ import Joi from "joi";
 
 export type LoginSchema = Pick<User, "email" | "password">;
 
-export const loginSchema = Joi.object<LoginSchema>({
+export const loginSchema = Joi.object({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
 });
@@ -12,7 +12,7 @@ export type RegisterSchema = Pick<User, "username" | "email" | "password"> & {
     password_confirmation: string;
 };
 
-export const registerSchema = Joi.object<RegisterSchema>({
+export const registerSchema = Joi.object({
     username: Joi.string().required().trim().lowercase().replace(" ", ""),
     email: Joi.string().email().required(),
     password: Joi.string().required().min(6),
@@ -27,7 +27,7 @@ export const registerSchema = Joi.object<RegisterSchema>({
 
 export type EmailVerifySchema = Pick<User, "email"> & { token: string };
 
-export const emailVerifySchema = Joi.object<EmailVerifySchema>({
+export const emailVerifySchema = Joi.object({
     email: Joi.string().email().required(),
     token: Joi.string().required(),
 });

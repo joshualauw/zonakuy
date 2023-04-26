@@ -3,9 +3,9 @@ import bcrypt from "bcrypt";
 import { ErrorType } from "~/server/utils/constants";
 import prisma from "~/server/utils/prismaClient";
 import { exclude, generateRandomToken } from "~/server/utils/helpers";
-import { sendMail } from "~/server/service/email";
 import { schemaValidator } from "~/server/utils/validator";
-import { RegisterSchema, registerSchema } from "~/server/validation/auth";
+import { RegisterSchema, registerSchema } from "~/server/schema/auth";
+import { sendMail } from "~/server/utils/sendMail";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);

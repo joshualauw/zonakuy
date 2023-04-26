@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { User } from "@prisma/client";
 import prisma from "~/server/utils/prismaClient";
-import { LoginSchema, loginSchema } from "~/server/validation/auth";
+import { LoginSchema, loginSchema } from "~/server/schema/auth";
 
 //login
 export default defineEventHandler(async (event) => {

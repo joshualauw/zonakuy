@@ -1,4 +1,4 @@
-import { LoginSchema, RegisterSchema } from "~/server/validation/auth";
+import { LoginSchema, RegisterSchema } from "~/server/schema/auth";
 import fetcher from "~/utils/fetcher";
 
 export default function () {
