@@ -9,4 +9,8 @@ export default defineNuxtConfig({
         SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
         JWT_SECRET: process.env.JWT_SECRET,
     },
+    imports: {
+        dirs: ["composables", "composables/*/index.{ts,js,mjs,mts}", "composables/**"],
+    },
+    modules: ["@nuxtjs/tailwindcss", "@element-plus/nuxt"],
 });

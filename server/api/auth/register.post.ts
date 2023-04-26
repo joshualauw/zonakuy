@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import { ErrorType } from "~/server/utils/constants";
 import prisma from "~/server/utils/prismaClient";
 import { exclude, generateRandomToken } from "~/server/utils/helpers";
-import { sendMail } from "~/server/utils/email-service";
+import { sendMail } from "~/server/service/email";
 import { schemaValidator } from "~/server/utils/validator";
 import { RegisterSchema, registerSchema } from "~/server/validation/auth";
 
@@ -34,24 +34,33 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: ErrorType.database, data: err });
     }
 
-    // await sendMail({
-    //     to: user.email,
-    //     from: "joshualauw1@gmail.com",
-    //     subject: "Email Code Verification",
-    //     text: `your verification link https://zonakuy.netlify.app/login?token=${verifyToken}}`,
-    // });
+    await sendMail({
+        to: user.email,
+        from: "joshualauw1@gmail.com",
+        subject: "Email Code Verification",
+        text: `your verification link https://zonakuy.netlify.app/login?token=${verifyToken}}`,
+    });
+    //TODO: extract sendMail into domain functionality
 
     return { data: exclude(user, ["password"]), message: "register successful! Please check your email" };
 });
 
 async function registerUnique(value: RegisterSchema) {
-    const emailExist = await prisma.user.findFirst({ where: { email: value.email } });
-    if (emailExist) {
-        throw createError({ statusCode: 400, message: ErrorType.validation, data: ["email already exist"] });
-    }
-
     const usernameExist = await prisma.user.findFirst({ where: { username: value.username } });
     if (usernameExist) {
-        throw createError({ statusCode: 500, message: ErrorType.server, data: ["username already exist"] });
+        throw createError({
+            statusCode: 500,
+            message: ErrorType.server,
+            data: [{ path: "username", message: "username already exist" }],
+        });
+    }
+
+    const emailExist = await prisma.user.findFirst({ where: { email: value.email } });
+    if (emailExist) {
+        throw createError({
+            statusCode: 400,
+            message: ErrorType.validation,
+            data: [{ path: "email", message: "email already exist" }],
+        });
     }
 }

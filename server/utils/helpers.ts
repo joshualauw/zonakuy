@@ -1,9 +1,3 @@
-import Joi from "joi";
-
-export function errorFormatter(err: Joi.ValidationError) {
-    return err.details.map((e) => e.message);
-}
-
 export function exclude<T, Key extends keyof T>(obj: T, keys: Key[]): Omit<T, Key> {
     for (const key of keys) {
         delete obj[key];

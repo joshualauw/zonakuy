@@ -12,3 +12,7 @@ export async function schemaValidator<T>(schema: Joi.ObjectSchema<T>, body: T) {
 
     return value;
 }
+
+export function errorFormatter(err: Joi.ValidationError) {
+    return err.details.map((e) => ({ path: e.path[0], message: e.message }));
+}

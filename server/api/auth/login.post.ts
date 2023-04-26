@@ -26,10 +26,9 @@ export default defineEventHandler(async (event) => {
     if (!user) throw createError({ statusCode: 404, message: ErrorType.not_found, data: "user not found" });
     await userIsValid(validated, user);
 
-    const userWithoutPassword = exclude(user, ["password"]);
-    const token = jwt.sign(userWithoutPassword, config.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign(exclude(user, ["password"]), config.JWT_SECRET, { expiresIn: "1d" });
 
-    return { data: { user: userWithoutPassword, token }, message: "login successful" };
+    return { data: { user: exclude(user, ["password"]), token }, message: "login successful" };
 });
 
 async function userIsValid(value: LoginSchema, user: User) {
