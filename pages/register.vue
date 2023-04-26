@@ -88,21 +88,25 @@
 </template>
 
 <script setup lang="ts">
-const { signUp, loading, errors } = authService();
+definePageMeta({
+    public: true,
+});
 
-const form = reactive({
+const { signUp, loading, errors } = authController();
+
+const form = useForm({
     username: "",
     email: "",
     password: "",
     password_confirmation: "",
 });
 
-const error = computed(() => generateErrorChecks(errors.value, Object.keys({ ...form })));
+const error = computed(() => generateErrorChecks(errors.value, { ...form }));
 
 async function doSignUp() {
     const res = await signUp({ ...form });
     if (res.success) {
-        console.log(res.output);
+        form.reset();
     }
 }
 </script>

@@ -7,6 +7,5 @@ export default defineNuxtPlugin((nuxtApp) => {
     if (token.value) {
         const decoded = jwt.decode(token.value);
         user.value = { token: token.value, credentials: deserialize(decoded) };
-        console.log(user.value);
     }
 });

@@ -36,7 +36,7 @@
                         <ElFormItem label="Password">
                             <ElInput
                                 v-model="form.password"
-                                type="text"
+                                type="password"
                                 size="large"
                                 :class="{ 'border border-red-500': error.password }"
                             />
@@ -60,19 +60,28 @@
 </template>
 
 <script setup lang="ts">
-const { signIn, loading, errors } = authService();
+definePageMeta({
+    public: true,
+});
+
+const { signIn, loading, errors } = authController();
+const route = useRoute();
 
 const form = reactive({
     email: "",
     password: "",
 });
 
-const error = computed(() => generateErrorChecks(errors.value, Object.keys({ ...form })));
+const error = computed(() => generateErrorChecks(errors.value, { ...form }));
 
 async function doSignIn() {
     const res = await signIn({ ...form });
-    if (res.success) {
-        console.log(res.output);
+    if (res.success && res.output) {
+        if (res.output.data.user.role == "user") {
+            navigateTo(route.redirectedFrom?.fullPath ?? "/event");
+        } else {
+            navigateTo("/admin/event");
+        }
     }
 }
 </script>

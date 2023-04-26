@@ -49,8 +49,8 @@ async function registerUnique(value: RegisterSchema) {
     const usernameExist = await prisma.user.findFirst({ where: { username: value.username } });
     if (usernameExist) {
         throw createError({
-            statusCode: 500,
-            message: ErrorType.server,
+            statusCode: 400,
+            message: ErrorType.validation,
             data: [{ path: "username", message: "username already exist" }],
         });
     }
