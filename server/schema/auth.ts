@@ -1,33 +1,28 @@
-import { User } from "@prisma/client";
-import Joi from "joi";
+import yup from "yup";
 
-export type LoginSchema = Pick<User, "email" | "password">;
-
-export const loginSchema = Joi.object({
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+export const loginSchema = yup.object({
+    email: yup.string().required().email(),
+    password: yup.string().required(),
 });
 
-export type RegisterSchema = Pick<User, "username" | "email" | "password"> & {
-    password_confirmation: string;
-};
+export type LoginSchema = yup.InferType<typeof loginSchema>;
 
-export const registerSchema = Joi.object({
-    username: Joi.string().required().trim().lowercase().replace(" ", ""),
-    email: Joi.string().email().required(),
-    password: Joi.string().required().min(6),
-    password_confirmation: Joi.any()
-        .valid(Joi.ref("password"))
+export const registerSchema = yup.object({
+    username: yup
+        .string()
         .required()
-        .messages({
-            "any.only": "password doesn't match",
-        })
-        .label("password confirmation"),
+        .trim()
+        .transform((v: string) => v.toLowerCase().replaceAll(" ", "")),
+    email: yup.string().email().required(),
+    password: yup.string().required().min(6),
+    password_confirmation: yup.string().oneOf([yup.ref("password")], "password must match"),
 });
 
-export type EmailVerifySchema = Pick<User, "email"> & { token: string };
+export type RegisterSchema = yup.InferType<typeof registerSchema>;
 
-export const emailVerifySchema = Joi.object({
-    email: Joi.string().email().required(),
-    token: Joi.string().required(),
+export const emailVerifySchema = yup.object({
+    email: yup.string().email().required(),
+    token: yup.string().required(),
 });
+
+export type EmailVerifySchema = yup.InferType<typeof emailVerifySchema>;
