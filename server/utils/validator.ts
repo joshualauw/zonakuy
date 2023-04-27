@@ -1,18 +1,18 @@
-import Joi from "joi";
+import { ErrorType } from "./constants";
+import yup from "yup";
 
-export async function schemaValidator<T>(schema: Joi.ObjectSchema<T>, body: T) {
-    const { error, value } = schema.validate(body, { abortEarly: false });
-    if (error) {
-        throw createError({
-            statusCode: 400,
-            message: ErrorType.validation,
-            data: errorFormatter(error),
-        });
+export async function schemaValidator<T>(schema: yup.ObjectSchema<any>, body: T) {
+    try {
+        const validated = await schema.validate(body, { abortEarly: false });
+
+        return validated;
+    } catch (err: any) {
+        if (err instanceof yup.ValidationError) {
+            throw createError({
+                statusCode: 400,
+                message: ErrorType.validation,
+                data: err.inner.map((e) => ({ path: e.path, message: e.message })),
+            });
+        }
     }
-
-    return value;
-}
-
-export function errorFormatter(err: Joi.ValidationError) {
-    return err.details.map((e) => ({ path: e.path[0], message: e.message }));
 }
