@@ -51,6 +51,10 @@
                                 Doesn't have an account?
                                 <NuxtLink to="/register" class="text-gray-700 underline">Register</NuxtLink>.
                             </p>
+                            <p class="mt-4 text-sm text-gray-500 sm:mt-0">
+                                activate an account?
+                                <NuxtLink to="/activate" class="text-gray-700 underline">Activate</NuxtLink>.
+                            </p>
                         </div>
                     </ElForm>
                 </div>
@@ -65,15 +69,20 @@ definePageMeta({
     nologin: true,
 });
 
-const { signIn, loading, errors } = authController();
+const { signIn, verifyAccount, loading, errors } = authController();
 const route = useRoute();
 
 const form = reactive({
     email: "",
     password: "",
 });
-
 const error = computed(() => generateErrorChecks(errors.value, { ...form }));
+
+if (route.query.token && route.query.email) {
+    await verifyAccount({ email: route.query.email as string, token: route.query.token as string });
+    route.query.token = null;
+    route.query.email = null;
+}
 
 async function doSignIn() {
     const res = await signIn({ ...form });

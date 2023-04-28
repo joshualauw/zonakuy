@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: ErrorType.database, data: err });
     }
 
-    if (!user) throw createError({ statusCode: 404, message: ErrorType.not_found, data: "user not found" });
+    if (!user) throw createError({ statusCode: 404, message: ErrorType.not_found, data: "invalid email" });
     await checkUserVerification(validated, user);
 
     try {

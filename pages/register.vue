@@ -106,7 +106,7 @@ const error = computed(() => generateErrorChecks(errors.value, { ...form }));
 
 async function doSignUp() {
     const res = await signUp({ ...form });
-    if (res.success) {
+    if (res.success && res.output) {
         form.reset();
     }
 }

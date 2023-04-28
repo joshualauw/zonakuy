@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 
-const publicRoutes = ["/api/auth/login", "/api/auth/register", "/api/auth/verify"];
+//TODO: for public routes put into event.context.meta.public
+const publicRoutes = ["/api/auth/login", "/api/auth/register", "/api/auth/verify", "/api/auth/resend"];
 
 export default defineEventHandler((event) => {
     if (event.path && event.path.includes("/api") && !publicRoutes.includes(event.path)) {

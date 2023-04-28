@@ -1,3 +1,4 @@
+import { EmailVerifySchema } from "./../../server/schema/authSchema";
 import { LoginSchema, RegisterSchema } from "~/server/schema/authSchema";
 import fetcher from "~/utils/fetcher";
 
@@ -44,5 +45,26 @@ export default function () {
         ElNotification({ type: "success", title: "Success", message: "logout successful" });
     }
 
-    return { signUp, signIn, signOut, errors, loading };
+    async function verifyAccount(form: EmailVerifySchema) {
+        const globalLoading = loadingStore();
+        globalLoading.value = true;
+        const res = await useFetch("/api/auth/verify", {
+            method: "PUT",
+            body: form,
+        });
+        globalLoading.value = false;
+        fetcher(res, errors);
+    }
+
+    async function resendVerificationLink(email: string | null) {
+        loading.value = true;
+        const res = await useFetch("/api/auth/resend", {
+            method: "POST",
+            body: email,
+        });
+        loading.value = false;
+        fetcher(res, errors);
+    }
+
+    return { signUp, signIn, signOut, verifyAccount, resendVerificationLink, errors, loading };
 }

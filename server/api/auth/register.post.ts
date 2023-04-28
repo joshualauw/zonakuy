@@ -5,7 +5,7 @@ import prisma from "~/server/utils/prismaClient";
 import { exclude, generateRandomToken } from "~/server/utils/helpers";
 import { schemaValidator } from "~/server/utils/validator";
 import { RegisterSchema, registerSchema } from "~/server/schema/authSchema";
-import { sendMail } from "~/server/utils/sendMail";
+import { sendEmailVerificationLink } from "~/server/service/emailService";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody(event);
@@ -33,13 +33,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: ErrorType.database, data: err });
     }
 
-    await sendMail({
-        to: user.email,
-        from: "joshualauw1@gmail.com",
-        subject: "Email Code Verification",
-        text: `your verification link https://zonakuy.netlify.app/login?token=${verifyToken}}`,
-    });
-    //TODO: extract sendMail into domain functionality
+    await sendEmailVerificationLink(user.email, user.username, verifyToken);
 
     return { data: exclude(user, ["password"]), message: "register successful! Please check your email" };
 });

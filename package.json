@@ -13,6 +13,7 @@
         "@nuxt/image-edge": "^1.0.0-28020728.5df24eb",
         "@nuxtjs/tailwindcss": "^6.6.6",
         "@types/bcrypt": "^5.0.0",
+        "@types/crypto-js": "^4.1.1",
         "@types/jsonwebtoken": "^9.0.1",
         "@types/node": "^18",
         "nuxt": "^3.4.1",
@@ -23,7 +24,9 @@
         "@prisma/client": "^4.13.0",
         "@sendgrid/mail": "^7.7.0",
         "bcrypt": "^5.1.0",
+        "crypto-js": "^4.1.1",
         "daisyui": "^2.51.6",
+        "handlebars": "^4.7.7",
         "jsonwebtoken": "^9.0.0",
         "yup": "^1.1.1"
     }

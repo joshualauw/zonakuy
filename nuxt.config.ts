@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
         JWT_SECRET: process.env.JWT_SECRET,
+        CRYPTO_KEY: process.env.CRYPTO_KEY,
     },
     imports: {
         dirs: ["composables", "composables/*/index.{ts,js,mjs,mts}", "composables/**"],
