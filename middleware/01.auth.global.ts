@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     if (!to.meta.public && !user.value) {
         return navigateTo("/login");
     }
-    if (["/login", "/register"].includes(to.fullPath) && user.value) {
+    if (to.meta.nologin && user.value) {
         return navigateTo(from.redirectedFrom?.fullPath ?? "/event");
     }
 });

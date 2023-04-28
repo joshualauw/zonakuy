@@ -44,7 +44,7 @@
                         </ElFormItem>
 
                         <div class="sm:flex sm:items-center sm:gap-4">
-                            <ElButton @click="doSignIn" type="primary" size="large" :loading="loading"
+                            <ElButton @click="doSignIn" type="success" size="large" :loading="loading"
                                 >Sign In</ElButton
                             >
                             <p class="mt-4 text-sm text-gray-500 sm:mt-0">
@@ -62,6 +62,7 @@
 <script setup lang="ts">
 definePageMeta({
     public: true,
+    nologin: true,
 });
 
 const { signIn, loading, errors } = authController();

@@ -72,7 +72,7 @@
                         </ElRow>
 
                         <div class="sm:flex sm:items-center sm:gap-4">
-                            <ElButton @click="doSignUp" type="primary" size="large" :loading="loading"
+                            <ElButton @click="doSignUp" type="success" size="large" :loading="loading"
                                 >Sign Up</ElButton
                             >
                             <p class="mt-4 text-sm text-gray-500 sm:mt-0">
@@ -90,6 +90,7 @@
 <script setup lang="ts">
 definePageMeta({
     public: true,
+    nologin: true,
 });
 
 const { signUp, loading, errors } = authController();

@@ -8,3 +8,11 @@ html {
     font-family: 'Poppins', sans-serif;
 }
 
+@layer components {
+    .box {
+        @apply flex justify-center items-center
+    }
+    .card {
+        @apply bg-base-100 shadow-lg p-6 md:p-8
+    }
+}

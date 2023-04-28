@@ -12,5 +12,5 @@ export default defineNuxtConfig({
     imports: {
         dirs: ["composables", "composables/*/index.{ts,js,mjs,mts}", "composables/**"],
     },
-    modules: ["@nuxtjs/tailwindcss", "@element-plus/nuxt"],
+    modules: ["@nuxtjs/tailwindcss", "@element-plus/nuxt", "nuxt-icon", "@nuxt/image-edge"],
 });

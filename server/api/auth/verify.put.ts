@@ -1,7 +1,7 @@
 //verify account
 import { User } from "@prisma/client";
 import prisma from "~/server/utils/prismaClient";
-import { EmailVerifySchema, emailVerifySchema } from "~/server/schema/auth";
+import { EmailVerifySchema, emailVerifySchema } from "~/server/schema/authSchema";
 
 export default defineEventHandler(async (event) => {
     const body = await readBody<EmailVerifySchema>(event);

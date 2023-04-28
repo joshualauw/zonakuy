@@ -1,9 +1,6 @@
-export function generateErrorChecks(
-    errors: ValidationError[],
-    properties: Record<string, any>
-): Record<string, string> {
+export function generateErrorChecks(errors: ValidationError[], props: Record<string, any>): Record<string, string> {
     const result: Record<string, string> = {};
-    Object.keys(properties).forEach((prop) => {
+    Object.keys(props).forEach((prop) => {
         const errorIndex = errors.map((e) => e.path).findIndex((p) => p == prop);
         Object.assign(result, { [prop]: errorIndex >= 0 ? errors[errorIndex].message : "" });
     });

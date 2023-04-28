@@ -7,15 +7,8 @@ export default function (res: any, errors: Ref<ValidationError[]>) {
     if (res.error.value) {
         if (res.error.value.data.statusCode == 400) {
             errors.value.push(...res.error.value.data.data);
-            ElNotification({ type: "error", title: "Error", message: res.error.value.data.message });
-        } else if (res.error.value.data.statusCode == 401 || res.error.value.data.statusCode == 404) {
-            ElNotification({
-                type: "error",
-                title: "Error",
-                message: res.error.value.data.message + " - " + res.error.value.data.data,
-            });
         } else {
-            ElNotification({ type: "error", title: "Error", message: res.error.value.data.message });
+            ElNotification({ type: "error", title: "Error", message: res.error.value.data.data });
         }
     }
     if (res.data.value) {

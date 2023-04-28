@@ -1,4 +1,4 @@
-import { LoginSchema, RegisterSchema } from "~/server/schema/auth";
+import { LoginSchema, RegisterSchema } from "~/server/schema/authSchema";
 import fetcher from "~/utils/fetcher";
 
 export default function () {
@@ -30,7 +30,7 @@ export default function () {
         if (res.data.value) {
             const token = useCookie("token", { maxAge: 3600 });
             token.value = res.data.value.data.token;
-            user.value = { token: token.value, credentials: deserialize(res.data.value.data.user) };
+            user.value = { ...deserialize(res.data.value.data.user), token: token.value };
         }
 
         return { success: !res.error.value, output: res.data.value };
