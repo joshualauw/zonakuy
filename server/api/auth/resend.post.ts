@@ -1,8 +1,10 @@
+import authService from "~/server/service/authService";
 import { sendEmailVerificationLink } from "~/server/service/emailService";
-import prisma from "~/server/utils/prismaClient";
 
 export default defineEventHandler(async (event) => {
     const email = await readBody<string>(event);
+    const auth = authService();
+
     if (!email)
         throw createError({
             statusCode: 400,
@@ -10,20 +12,8 @@ export default defineEventHandler(async (event) => {
             data: [{ path: "email", message: "email is required" }],
         });
 
-    let user;
-    try {
-        user = await prisma.user.findFirst({ where: { email: email } });
-    } catch (err) {
-        throw createError({ statusCode: 500, message: ErrorType.database, data: err });
-    }
+    const user = await auth.findFirst({ where: { email } });
 
-    if (!user) {
-        throw createError({
-            statusCode: 400,
-            message: ErrorType.validation,
-            data: [{ path: "email", message: "email not found" }],
-        });
-    }
     if (user.is_verified) {
         throw createError({
             statusCode: 400,
