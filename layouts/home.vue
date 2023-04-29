@@ -4,5 +4,6 @@
         <div class="px-8 py-12 md:px-20">
             <slot></slot>
         </div>
+        <Footer />
     </NuxtLayout>
 </template>

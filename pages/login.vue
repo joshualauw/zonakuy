@@ -88,9 +88,9 @@ async function doSignIn() {
     const res = await signIn({ ...form });
     if (res.success && res.output) {
         if (res.output.data.user.role == "user") {
-            navigateTo(route.redirectedFrom?.fullPath ?? "/event");
+            return navigateTo({ path: route.redirectedFrom?.fullPath ?? "/event", replace: true });
         } else {
-            navigateTo("/admin/event");
+            return navigateTo({ path: "/login", replace: true });
         }
     }
 }

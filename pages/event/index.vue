@@ -1,7 +1,7 @@
 <template>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 w-full">
         <div class="col-span-2">
-            <EventItem v-for="i in 4" :data="i" />
+            <EventItem v-for="i in 5" :data="i" />
         </div>
         <div>
             <div class="card hidden sm:block h-[350px] overflow-hidden mb-10">
@@ -17,7 +17,7 @@
                     <p class="text-xl text-amber-500 font-bold">ONLY Rp. 99.000 / lifetime</p>
                 </div>
                 <div class="box"><NuxtImg src="/img/gold_coin.gif" class="w-36 h-36"></NuxtImg></div>
-                <div class="box"><ElButton type="warning" size="large">Buy Now</ElButton></div>
+                <div class="box"><ElButton type="warning" size="large">See Details</ElButton></div>
             </div>
         </div>
     </div>

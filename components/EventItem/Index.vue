@@ -1,5 +1,5 @@
 <template>
-    <div class="card relative flex flex-row items-start md:space-x-6 w-full mb-8">
+    <div class="card relative flex flex-row items-start md:space-x-6 w-full h-52 mb-8">
         <NuxtImg class="w-52 hidden md:block h-full rounded-lg" src="/img/default_event.jpg"></NuxtImg>
         <div class="w-3/4 h-full">
             <h1 class="font-bold text-base md:text-lg mb-1">ZonaKuy Conference Event #{{ data }}</h1>
@@ -14,14 +14,14 @@
             <ElTag class="m-1.5 cursor-pointer hover:brightness-90" type="info">Hybrid</ElTag>
         </div>
         <div class="divider divider-horizontal"></div>
-        <div class="w-1/4 box flex-col h-full rounded-lg">
-            <p class="font-extrabold text-base md:text-xl">Rp. 25.000</p>
-            <p class="text-gray-500 text-sm md:text-base mb-4">10 slots left</p>
-            <ElButton>Register</ElButton>
+        <div class="w-1/4 h-full">
+            <EventItemJoinAction v-if="!type || type == 'join'" />
+            <EventItemLinkAction v-else-if="type == 'link'" />
+            <EventItemEditAction v-else />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-defineProps(["data"]);
+defineProps<{ data: any; type?: "edit" | "join" | "link" }>();
 </script>

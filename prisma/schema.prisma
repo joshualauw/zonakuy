@@ -48,7 +48,7 @@ model Event {
   end_date    DateTime      @db.Date
   location    Location?
   tags        String[]      @default([])
-  publicity   Publicity
+  isPublic    Boolean       @default(false)
   log         Log[]
   createdAt   DateTime      @default(now()) @db.Date
   updatedAt   DateTime      @updatedAt @db.Date
@@ -225,10 +225,4 @@ enum EventAccess {
   form
   certificate
   participant
-}
-
-enum Publicity {
-  public
-  private
-  registered
 }

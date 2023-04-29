@@ -9,12 +9,3 @@ export function generateRandomToken(length: number = 6) {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     return Array.from(Array(length), () => characters.charAt(Math.floor(Math.random() * characters.length))).join("");
 }
-
-export function slugify(str: string) {
-    return str
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/[\s_-]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-}
