@@ -1,8 +1,8 @@
 <template>
     <div class="min-h-screen bg-slate-50">
         <slot></slot>
-        <Loader :loading="globalLoading" />
     </div>
+    <Loader :loading="globalLoading" />
 </template>
 
 <script setup lang="ts">

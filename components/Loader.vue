@@ -1,9 +1,9 @@
 <template>
-    <div v-if="loading" class="absolute bg-gray-100 z-10 h-screen w-screen top-0 left-0">
+    <div v-if="loading" class="fixed bg-gray-800 opacity-50 z-10 box h-screen w-screen top-0 left-0">
         <div role="status">
             <svg
                 aria-hidden="true"
-                class="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                class="w-32 h-32 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-amber-600"
                 viewBox="0 0 100 101"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
