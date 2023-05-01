@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import jwt from "jsonwebtoken";
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -5,7 +6,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     const user = authStore();
 
     if (token.value) {
-        const decoded = jwt.decode(token.value);
-        user.value = { ...deserialize(decoded), token: token.value };
+        const decoded = jwt.decode(token.value) as Omit<User, "password">;
+        user.value = { ...decoded, token: token.value };
     }
 });

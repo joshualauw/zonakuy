@@ -1,4 +1,4 @@
-<template>halaman atur sponsor</template>
+<template>halaman settings event</template>
 
 <script setup lang="ts">
 definePageMeta({

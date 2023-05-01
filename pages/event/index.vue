@@ -1,7 +1,7 @@
 <template>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 w-full">
         <div class="col-span-2">
-            <EventItem v-for="i in 5" :data="i" />
+            <EventItem v-if="events" v-for="evt in events.data" :data="evt" type="join" />
         </div>
         <div>
             <div class="card hidden sm:block h-[350px] overflow-hidden mb-10">
@@ -28,4 +28,8 @@ definePageMeta({
     public: true,
     layout: "home",
 });
+
+const { getAllEvent } = eventController();
+
+const { data: events } = await getAllEvent({});
 </script>

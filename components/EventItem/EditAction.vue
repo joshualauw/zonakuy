@@ -4,7 +4,7 @@
             <ElButton><Icon name="material-symbols:settings" class="w-4 h-4 mr-1" />Options</ElButton>
             <template #dropdown>
                 <ElDropdownMenu>
-                    <ElDropdownItem>
+                    <ElDropdownItem @click="navigateTo(editLink)">
                         <Icon name="material-symbols:edit" class="mr-1 w-4 h-4"></Icon> edit
                     </ElDropdownItem>
                     <ElDropdownItem>
@@ -19,3 +19,7 @@
         </span>
     </div>
 </template>
+
+<script setup lang="ts">
+defineProps<{ editLink: string }>();
+</script>

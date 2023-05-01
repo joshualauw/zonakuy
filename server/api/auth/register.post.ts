@@ -1,13 +1,24 @@
 //register
+import prisma from "~/server/utils/prismaClient";
 import bcrypt from "bcrypt";
-
+import yup from "yup";
 import { exclude, generateRandomToken } from "~/server/utils/helpers";
 import { schemaValidator } from "~/server/utils/validator";
-import { RegisterSchema, registerSchema } from "~/server/schema/authSchema";
 import { sendEmailVerificationLink } from "~/server/service/emailService";
-import prisma from "~/server/utils/prismaClient";
+import { H3Event } from "h3";
 
-export default defineEventHandler(async (event) => {
+export const registerSchema = yup.object({
+    username: yup
+        .string()
+        .required()
+        .trim()
+        .transform((v: string) => v.toLowerCase().replaceAll(" ", "")),
+    email: yup.string().email().required(),
+    password: yup.string().required().min(6),
+    password_confirmation: yup.string().oneOf([yup.ref("password")], "password must match"),
+});
+
+async function register(event: H3Event) {
     const body = await readBody(event);
     const validated = await schemaValidator<RegisterSchema>(registerSchema, body);
 
@@ -39,4 +50,9 @@ export default defineEventHandler(async (event) => {
     await sendEmailVerificationLink(user.email, user.username, verifyToken);
 
     return { data: exclude(user, ["password"]), message: "register successful! Please check your email" };
-});
+}
+
+export type RegisterSchema = yup.InferType<typeof registerSchema>;
+export type RegisterResponse = UnwrapPromise<ReturnType<typeof register>>;
+
+export default defineEventHandler(register);

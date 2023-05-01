@@ -119,17 +119,15 @@ function deleteTag(tag: string) {
 
 function createTag() {
     if (newTag.value) form.tags.push(newTag.value);
-
     inputVisible.value = false;
     newTag.value = "";
 }
 
 async function doCreateEvent() {
-    console.log(form);
     //@ts-ignore: string will be validated to array
-    const res = await createEvent({ ...form });
-    if (res.success) {
-        emits("success", true);
+    const { error, data } = await createEvent({ ...form });
+    if (!error.value && data.value) {
+        emits("success", data.value.data.slug);
     }
 }
 </script>

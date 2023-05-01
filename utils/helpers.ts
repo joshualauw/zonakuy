@@ -7,6 +7,6 @@ export function generateErrorChecks(errors: ValidationError[], props: Record<str
     return result;
 }
 
-export function deserialize(payload: any) {
+export function deserialize<T>(payload: any): T {
     return JSON.parse(JSON.stringify(payload));
 }

@@ -1,8 +1,14 @@
 //verify account
-import { EmailVerifySchema, emailVerifySchema } from "~/server/schema/authSchema";
+import yup from "yup";
 import prisma from "~/server/utils/prismaClient";
+import { H3Event } from "h3";
 
-export default defineEventHandler(async (event) => {
+export const emailVerifySchema = yup.object({
+    email: yup.string().email().required(),
+    token: yup.string().required(),
+});
+
+async function emailVerify(event: H3Event) {
     const body = await readBody<EmailVerifySchema>(event);
     const validated = await schemaValidator<EmailVerifySchema>(emailVerifySchema, body);
 
@@ -21,4 +27,9 @@ export default defineEventHandler(async (event) => {
     });
 
     return { data: null, message: "email verified successfully" };
-});
+}
+
+export type EmailVerifySchema = yup.InferType<typeof emailVerifySchema>;
+export type EmailVerifyResponse = UnwrapPromise<ReturnType<typeof emailVerify>>;
+
+export default defineEventHandler(emailVerify);

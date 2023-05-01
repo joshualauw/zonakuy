@@ -105,8 +105,8 @@ const form = useForm({
 const error = computed(() => generateErrorChecks(errors.value, { ...form }));
 
 async function doSignUp() {
-    const res = await signUp({ ...form });
-    if (res.success && res.output) {
+    const { error } = await signUp({ ...form });
+    if (!error.value) {
         form.reset();
     }
 }

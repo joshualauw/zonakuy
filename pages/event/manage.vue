@@ -1,10 +1,22 @@
 <template>
     <el-tabs v-model="activeName">
         <el-tab-pane label="Managed events" name="managed">
-            <EventItem v-for="i in 3" :data="i" type="edit" />
+            <EventItem
+                v-if="managedEvents && managedEvents.data.length > 0"
+                v-for="evt in managedEvents.data"
+                :data="evt"
+                type="edit"
+            />
+            <p v-else class="text-center text-lg mt-5">-- No Events --</p>
         </el-tab-pane>
         <el-tab-pane label="Registered Events" name="registered">
-            <EventItem v-for="i in 4" :data="i" type="link" />
+            <EventItem
+                v-if="managedEvents && managedEvents.data.length > 0"
+                v-for="evt in managedEvents.data"
+                :data="evt"
+                type="link"
+            />
+            <p v-else class="text-center text-lg mt-5">-- No Events --</p>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -14,5 +26,9 @@ definePageMeta({
     layout: "home",
 });
 
+const { getAllEvent } = eventController();
+const user = authStore();
 const activeName = ref("managed");
+
+const { data: managedEvents } = await getAllEvent({ user_id: user.value?.id });
 </script>

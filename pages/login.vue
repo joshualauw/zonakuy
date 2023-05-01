@@ -71,6 +71,7 @@ definePageMeta({
 
 const { signIn, verifyAccount, loading, errors } = authController();
 const route = useRoute();
+const user = authStore();
 
 const form = reactive({
     email: "",
@@ -85,10 +86,15 @@ if (route.query.token && route.query.email) {
 }
 
 async function doSignIn() {
-    const res = await signIn({ ...form });
-    if (res.success && res.output) {
-        if (res.output.data.user.role == "user") {
-            return navigateTo({ path: route.redirectedFrom?.fullPath ?? "/event", replace: true });
+    const { error, data } = await signIn({ ...form });
+    if (!error.value && data.value) {
+        const { user: userData, token: userToken } = data.value.data;
+        const token = useCookie("token", { maxAge: 86400 });
+        token.value = userToken;
+        user.value = { ...userData, token: userToken };
+
+        if (userData.role == "user") {
+            return navigateTo({ path: "/event", replace: true });
         } else {
             return navigateTo({ path: "/login", replace: true });
         }

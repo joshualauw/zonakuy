@@ -1,11 +1,16 @@
+import yup from "yup";
 import { exclude } from "~/server/utils/helpers";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { LoginSchema, loginSchema } from "~/server/schema/authSchema";
 import prisma from "~/server/utils/prismaClient";
+import { H3Event } from "h3";
 
-//login
-export default defineEventHandler(async (event) => {
+const loginSchema = yup.object({
+    email: yup.string().required().email(),
+    password: yup.string().required(),
+});
+
+async function login(event: H3Event) {
     const body = await readBody(event);
     const validated = await schemaValidator<LoginSchema>(loginSchema, body);
     const config = useRuntimeConfig();
@@ -24,6 +29,10 @@ export default defineEventHandler(async (event) => {
     }
 
     const token = jwt.sign(exclude(user, ["password"]), config.JWT_SECRET, { expiresIn: "1d" });
-
     return { data: { user: exclude(user, ["password"]), token }, message: "login successful" };
-});
+}
+
+export type LoginSchema = yup.InferType<typeof loginSchema>;
+export type LoginResponse = UnwrapPromise<ReturnType<typeof login>>;
+
+export default defineEventHandler(login);

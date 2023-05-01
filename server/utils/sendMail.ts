@@ -7,7 +7,7 @@ export async function sendMail(msg: sgMail.MailDataRequired) {
     try {
         await sgMail.send(msg);
         console.log(`email successfully sent to ${msg.to}`);
-    } catch (err) {
-        throw createError({ statusCode: 500, message: ErrorType.email, data: err });
+    } catch (err: any) {
+        throw createError({ statusCode: 500, message: err.message });
     }
 }
