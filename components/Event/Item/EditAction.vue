@@ -8,7 +8,7 @@
                         <Icon name="material-symbols:edit" class="mr-1 w-4 h-4"></Icon> edit
                     </ElDropdownItem>
                     <ElDropdownItem>
-                        <Icon name="material-symbols:link" class="mr-1 w-4 h-4"></Icon> preview
+                        <Icon name="material-symbols:send" class="mr-1 w-4 h-4"></Icon> main page
                     </ElDropdownItem>
                 </ElDropdownMenu>
             </template>

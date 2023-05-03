@@ -15,14 +15,43 @@
                         <Icon class="swap-off w-7 h-7" name="material-symbols:chevron-left"></Icon>
                     </label>
                 </ElMenuItem>
-                <el-menu-item v-for="(nav, i) in sidebarNav" @click="navigateTo(nav.link)" :index="(i + 1).toString()">
+                <el-menu-item v-for="(nav, i) in sidebarNav" @click="goToMenuPage(nav)" :index="(i + 1).toString()">
                     <Icon class="w-6 h-6" :name="nav.icon"></Icon>
                     <template #title>
                         <span class="ml-2">{{ nav.name }}</span>
                     </template>
                 </el-menu-item>
             </ElMenu>
-            <div class="h-full w-3/5 p-8">
+            <div class="h-full w-full px-8 pb-8 pt-4 overflow-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-lg font-semibold">{{ currentPageName }}</h1>
+                    <ElDropdown v-if="user" @visible-change="iconSwap = !iconSwap" trigger="click">
+                        <span>
+                            <Avatar
+                                class="shrink-0"
+                                :name="user.username"
+                                :description="user.email"
+                                :image="user.profile_picture"
+                            >
+                                <template #action>
+                                    <label class="swap swap-rotate">
+                                        <input v-model="iconSwap" type="checkbox" disabled />
+                                        <Icon class="swap-on ml-2" name="fa:chevron-up" />
+                                        <Icon class="swap-off ml-2" name="fa:chevron-down" />
+                                    </label>
+                                </template>
+                            </Avatar>
+                        </span>
+                        <template #dropdown>
+                            <ElDropdownMenu class="md:w-48">
+                                <ElDropdownItem @click="navigateTo(`/profile/${user.username}`)">
+                                    Profile
+                                </ElDropdownItem>
+                                <ElDropdownItem @click="navigateTo('/event')" divided>Back to Home</ElDropdownItem>
+                            </ElDropdownMenu>
+                        </template>
+                    </ElDropdown>
+                </div>
                 <slot></slot>
             </div>
         </div>
@@ -33,6 +62,8 @@
 import { ref } from "vue";
 const isCollapse = ref(true);
 const route = useRoute();
+const user = authStore();
+const iconSwap = ref(false);
 
 const sidebarNav = [
     {
@@ -76,6 +107,13 @@ const sidebarNav = [
         link: `/event/${route.params.slug}/dashboard/settings`,
     },
 ];
+
+const currentPageName = ref(sidebarNav[0].name);
+
+function goToMenuPage(nav: (typeof sidebarNav)[0]) {
+    currentPageName.value = nav.name;
+    navigateTo(nav.link);
+}
 </script>
 
 <style>

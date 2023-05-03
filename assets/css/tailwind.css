@@ -15,4 +15,7 @@ html {
     .card {
         @apply bg-base-100 shadow-lg p-6 md:p-8
     }
+    .action-button {
+        @apply box flex-col p-4 border h-28 text-gray-600 text-sm hover:bg-blue-50 hover:text-blue-400
+    }
 }

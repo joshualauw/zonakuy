@@ -7,7 +7,12 @@
             <div class="card hidden sm:block h-[350px] overflow-hidden mb-10">
                 <h1 class="font-bold text-lg mb-5">Organizers</h1>
                 <ElScrollbar class="h-full pr-5">
-                    <OrganizerItem v-for="i in 8" :data="i" />
+                    <Avatar v-for="i in 8" name="John Smith" description="12 Events Created">
+                        <template #action> <ElButton type="success" round size="small">visit</ElButton></template>
+                        <template #default>
+                            <div class="divider"></div>
+                        </template>
+                    </Avatar>
                 </ElScrollbar>
             </div>
             <div class="card hidden sm:block space-y-4">

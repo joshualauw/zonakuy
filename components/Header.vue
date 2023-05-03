@@ -9,22 +9,21 @@
                 <Icon name="material-symbols:add" class="w-6 h-6 mr-1"></Icon> Create Event
             </button>
             <ElDropdown @visible-change="iconSwap = !iconSwap" trigger="click">
-                <span class="el-dropdown-link">
-                    <button class="group flex shrink-0 items-center rounded-lg">
-                        <NuxtImg
-                            :src="user.profile_picture ?? '/img/default_user.jpg'"
-                            class="rounded-full w-7 h-7 md:w-10 md:h-10 mr-1"
-                        />
-                        <p class="ms-2 hidden text-left text-white text-xs sm:block">
-                            <strong class="block font-medium">{{ user.username }}</strong>
-                            <span class="text-gray-300">{{ user.email }}</span>
-                        </p>
-                        <label class="swap swap-rotate">
-                            <input v-model="iconSwap" type="checkbox" disabled />
-                            <Icon class="swap-on text-gray-200 ml-2" name="fa:chevron-up" />
-                            <Icon class="swap-off text-gray-200 ml-2" name="fa:chevron-down" />
-                        </label>
-                    </button>
+                <span>
+                    <Avatar
+                        class="text-white shrink-0"
+                        :name="user.username"
+                        :description="user.email"
+                        :image="user.profile_picture"
+                    >
+                        <template #action>
+                            <label class="swap swap-rotate">
+                                <input v-model="iconSwap" type="checkbox" disabled />
+                                <Icon class="swap-on text-gray-200 ml-2" name="fa:chevron-up" />
+                                <Icon class="swap-off text-gray-200 ml-2" name="fa:chevron-down" />
+                            </label>
+                        </template>
+                    </Avatar>
                 </span>
                 <template #dropdown>
                     <ElDropdownMenu class="md:w-48">

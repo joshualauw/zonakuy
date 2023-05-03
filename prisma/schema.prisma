@@ -47,6 +47,7 @@ model Event {
   start_date  DateTime      @db.Date
   end_date    DateTime      @db.Date
   location    Location?
+  invitations Invitation[]
   tags        String[]      @default([])
   isPublic    Boolean       @default(false)
   log         Log[]
@@ -68,7 +69,6 @@ model Participant {
   role        EventRole
   access      EventAccess[]
   ref         String        @unique
-  log         Log[]
   preferences Json?
   createdAt   DateTime      @default(now()) @db.Date
   updatedAt   DateTime      @updatedAt @db.Date
@@ -83,7 +83,6 @@ model Sponsor {
   name        String
   logo        String?
   description String
-  log         Log[]
   createdAt   DateTime @default(now()) @db.Date
   updatedAt   DateTime @updatedAt @db.Date
 }
@@ -95,21 +94,20 @@ model Budget {
   name      String
   limit     Float
   current   Float
-  log       Log[]
   createdAt DateTime @default(now()) @db.Date
   updatedAt DateTime @updatedAt @db.Date
 }
 
 model Session {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  day        Int
-  start_time String
-  end_time   String
-  speaker    Speaker[]
-  log        Log[]
-  createdAt  DateTime  @default(now()) @db.Date
-  updatedAt  DateTime  @updatedAt @db.Date
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  day         DateTime
+  start_time  DateTime
+  end_time    DateTime
+  speaker     Speaker[]
+  createdAt   DateTime  @default(now()) @db.Date
+  updatedAt   DateTime  @updatedAt @db.Date
 }
 
 model Form {
@@ -119,7 +117,6 @@ model Form {
   name      String
   fields    Json
   responses FormResponse[]
-  log       Log[]
   createdAt DateTime       @default(now()) @db.Date
   updatedAt DateTime       @updatedAt @db.Date
 }
@@ -129,7 +126,6 @@ model Certificate {
   participant    Participant @relation(fields: [participant_id], references: [id])
   participant_id String      @db.ObjectId
   objects        Json
-  log            Log[]
   createdAt      DateTime    @default(now()) @db.Date
   updatedAt      DateTime    @updatedAt @db.Date
 }
@@ -158,15 +154,22 @@ model Transaction {
   createdAt      DateTime          @default(now()) @db.Date
 }
 
+type Invitation {
+  code        String
+  email       String
+  valid_until DateTime
+}
+
 type FormResponse {
   email   String
   answers Json
 }
 
 type Log {
-  by  String
-  at  String
-  act String
+  by     String
+  action String
+  type   LogType
+  time   DateTime
 }
 
 type Notification {
@@ -189,6 +192,15 @@ type Speaker {
   name   String
   avatar String?
   role   String?
+}
+
+enum LogType {
+  budget
+  sponsor
+  participant
+  certificate
+  form
+  session
 }
 
 enum TransactionStatus {
