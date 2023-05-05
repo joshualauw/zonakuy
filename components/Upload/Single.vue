@@ -1,5 +1,12 @@
 <template>
-    <ElUpload ref="upload" :on-change="handleFileChanged" :limit="1" :on-exceed="handleExceed" :auto-upload="false">
+    <ElUpload
+        ref="upload"
+        :on-change="handleFileChanged"
+        :limit="1"
+        :on-exceed="handleExceed"
+        list-type="picture"
+        :auto-upload="false"
+    >
         <template #trigger>
             <ElButton type="primary" size="large">Select File</ElButton>
         </template>

@@ -85,6 +85,8 @@ if (route.query.token && route.query.email) {
     route.query.email = null;
 }
 
+//TODO: add forgot password feature
+
 async function doSignIn() {
     const { error, data } = await signIn({ ...form });
     if (!error.value && data.value) {

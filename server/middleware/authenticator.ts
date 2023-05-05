@@ -1,7 +1,6 @@
 import { H3Event } from "h3";
 import jwt from "jsonwebtoken";
 
-//TODO: for public routes put into event.context.meta.public
 const publicRoutes = [
     { path: "/api/auth/login", method: "POST" },
     { path: "/api/auth/register", method: "POST" },

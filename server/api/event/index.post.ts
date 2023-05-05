@@ -8,7 +8,6 @@ import { User } from "@prisma/client";
 export const createEventSchema = yup.object({
     name: yup.string().required(),
     description: yup.string().required(),
-    price: yup.number().required().min(0),
     limit: yup.number().required().min(1),
     date_range: yup.array(yup.string().required()).min(2).required(),
     tags: yup.array(yup.string().required()).required().min(1),
@@ -27,6 +26,7 @@ async function createEvent(event: H3Event) {
             end_date: validated.date_range[1],
             user_id: user.id,
             slug: slugify(validated.name),
+            price: 0,
             ...exclude(validated, ["date_range"]),
         },
     });

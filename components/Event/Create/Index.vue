@@ -79,9 +79,9 @@
             <ElButton v-else class="button-new-tag ml-1" @click="showInput"> + New Tag </ElButton>
             <p v-if="error.tags" class="mt-0.5 text-xs text-red-500">{{ error.tags }}</p>
         </ElFormItem>
-        <ElButton @click="doCreateEvent" type="success" size="large" class="float-right" :loading="loading"
-            >Save & Next</ElButton
-        >
+        <ElButton @click="doCreateEvent" type="success" size="large" class="float-right" :loading="loading">
+            Save
+        </ElButton>
     </ElForm>
 </template>
 

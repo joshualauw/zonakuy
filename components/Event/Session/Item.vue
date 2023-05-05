@@ -25,14 +25,13 @@
                     <span>Idris Elba</span>
                 </div>
             </ElTag>
-            <ElButton @click="modalVisible = true" class="button-new-tag mb-4 mr-4" style="height: 65px">
-                + New Speaker
+            <ElButton @click="$emit('addSpeaker')" class="button-new-tag mb-4 mr-4" style="height: 65px">
+                + Add Speaker
             </ElButton>
         </div>
     </div>
-    <EventSessionSpeakerCreate @closed="modalVisible = false" :visible="modalVisible" />
 </template>
 
 <script setup lang="ts">
-const modalVisible = ref(false);
+defineEmits(["addSpeaker"]);
 </script>

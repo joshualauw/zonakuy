@@ -22,7 +22,7 @@
                     </template>
                 </el-menu-item>
             </ElMenu>
-            <div class="h-full w-full px-8 pb-8 pt-4 overflow-auto">
+            <div class="h-full w-full px-10 pb-8 pt-4 overflow-auto">
                 <div class="flex justify-between items-center mb-6">
                     <h1 class="text-lg font-semibold">{{ currentPageName }}</h1>
                     <ElDropdown v-if="user" @visible-change="iconSwap = !iconSwap" trigger="click">
@@ -65,6 +65,7 @@ const route = useRoute();
 const user = authStore();
 const iconSwap = ref(false);
 
+//TODO: fix undefined error
 const sidebarNav = [
     {
         icon: "material-symbols:bar-chart",
@@ -108,7 +109,7 @@ const sidebarNav = [
     },
 ];
 
-const currentPageName = ref(sidebarNav[0].name);
+const currentPageName = ref(sidebarNav.find((n) => n.link == route.fullPath)?.name);
 
 function goToMenuPage(nav: (typeof sidebarNav)[0]) {
     currentPageName.value = nav.name;

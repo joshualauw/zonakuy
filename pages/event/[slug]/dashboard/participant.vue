@@ -11,7 +11,7 @@
         </div>
         <div class="md:col-span-1 space-y-8 h-full">
             <div class="card rounded-md h-[375px] overflow-hidden">
-                <h3 class="font-semibold mb-4">Activity</h3>
+                <h3 class="font-semibold mb-4">Activity Log</h3>
                 <EventLog />
             </div>
             <div class="card rounded-md h-[225px]">

@@ -88,14 +88,16 @@ model Sponsor {
 }
 
 model Budget {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  event     Event    @relation(fields: [event_id], references: [id])
-  event_id  String   @db.ObjectId
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  event     Event     @relation(fields: [event_id], references: [id])
+  event_id  String    @db.ObjectId
   name      String
   limit     Float
   current   Float
-  createdAt DateTime @default(now()) @db.Date
-  updatedAt DateTime @updatedAt @db.Date
+  category  String
+  expenses  Expense[]
+  createdAt DateTime  @default(now()) @db.Date
+  updatedAt DateTime  @updatedAt @db.Date
 }
 
 model Session {
@@ -180,12 +182,18 @@ type Notification {
 }
 
 type Location {
-  coordinate  Float[]
+  latitude    Float
+  longitude   Float
   country     String
   city        String
   street      String
   venue       String
   postal_code String
+}
+
+type Expense {
+  name   String
+  amount Int
 }
 
 type Speaker {
