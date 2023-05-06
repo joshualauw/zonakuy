@@ -6,6 +6,7 @@ const publicRoutes = [
     { path: "/api/auth/register", method: "POST" },
     { path: "/api/auth/verify", method: "PUT" },
     { path: "/api/auth/resend", method: "POST" },
+    { path: "/api/auth/reset", method: "PUT" },
     { path: "/api/event", method: "GET" },
 ];
 

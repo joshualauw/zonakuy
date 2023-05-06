@@ -1,7 +1,13 @@
 <template>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 w-full">
         <div class="col-span-2">
-            <EventItem v-if="events" v-for="evt in events.data" :data="evt" type="join" />
+            <EventItem v-if="events" v-for="evt in events.data" :event="evt">
+                <div class="box flex-col h-full rounded-lg">
+                    <p class="font-extrabold text-base md:text-xl">Rp. 25.000</p>
+                    <p class="text-gray-500 text-sm md:text-base mb-4">10 slots left</p>
+                    <ElButton>Register</ElButton>
+                </div>
+            </EventItem>
         </div>
         <div>
             <div class="card hidden sm:block h-[350px] overflow-hidden mb-10">

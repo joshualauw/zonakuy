@@ -22,59 +22,31 @@
                     </p>
 
                     <ElForm class="mt-8 space-y-4" label-position="top">
-                        <ElFormItem label="Username">
-                            <ElInput
-                                v-model="form.username"
-                                type="text"
-                                size="large"
-                                :class="{ 'border border-red-500': error.username }"
-                            />
-                            <p v-if="error.username" class="mt-0.5 text-xs text-red-500">{{ error.username }}</p>
+                        <ElFormItem label="Username" :error="error.username">
+                            <ElInput v-model="form.username" type="text" size="large" />
                         </ElFormItem>
 
-                        <ElFormItem label="Email">
-                            <ElInput
-                                v-model="form.email"
-                                type="text"
-                                size="large"
-                                :class="{ 'border border-red-500': error.email }"
-                            />
-                            <p v-if="error.email" class="mt-0.5 text-xs text-red-500">{{ error.email }}</p>
+                        <ElFormItem label="Email" :error="error.email">
+                            <ElInput v-model="form.email" type="text" size="large" />
                         </ElFormItem>
 
                         <ElRow :gutter="20">
                             <ElCol :span="12">
-                                <ElFormItem label="Password">
-                                    <ElInput
-                                        v-model="form.password"
-                                        type="password"
-                                        size="large"
-                                        :class="{ 'border border-red-500': error.password }"
-                                    />
-                                    <p v-if="error.password" class="mt-0.5 text-xs text-red-500">
-                                        {{ error.password }}
-                                    </p>
-                                </ElFormItem></ElCol
-                            >
+                                <ElFormItem label="Password" :error="error.password">
+                                    <ElInput v-model="form.password" type="password" size="large" />
+                                </ElFormItem>
+                            </ElCol>
                             <ElCol :span="12">
-                                <ElFormItem label="Password Confirmation">
-                                    <ElInput
-                                        v-model="form.password_confirmation"
-                                        type="password"
-                                        size="large"
-                                        :class="{ 'border border-red-500': error.password_confirmation }"
-                                    />
-                                    <p v-if="error.password_confirmation" class="mt-0.5 text-xs text-red-500">
-                                        {{ error.password_confirmation }}
-                                    </p>
+                                <ElFormItem label="Password Confirmation" :error="error.password_confirmation">
+                                    <ElInput v-model="form.password_confirmation" type="password" size="large" />
                                 </ElFormItem>
                             </ElCol>
                         </ElRow>
 
                         <div class="sm:flex sm:items-center sm:gap-4">
-                            <ElButton @click="doSignUp" type="success" size="large" :loading="loading"
-                                >Sign Up</ElButton
-                            >
+                            <ElButton @click="doSignUp" type="success" size="large" :loading="loading">
+                                Sign Up
+                            </ElButton>
                             <p class="mt-4 text-sm text-gray-500 sm:mt-0">
                                 Already have an account?
                                 <NuxtLink to="/login" class="text-gray-700 underline">Log in</NuxtLink>.

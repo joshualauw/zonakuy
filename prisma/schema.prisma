@@ -25,7 +25,6 @@ model User {
   bio             String?
   is_banned       Boolean        @default(false)
   is_verified     Boolean        @default(false)
-  verify_token    String?
   createdAt       DateTime       @default(now()) @db.Date
   updatedAt       DateTime       @updatedAt @db.Date
   Event           Event[]

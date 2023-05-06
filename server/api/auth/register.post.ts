@@ -4,8 +4,9 @@ import bcrypt from "bcrypt";
 import yup from "yup";
 import { exclude, generateRandomToken } from "~/server/utils/helpers";
 import { schemaValidator } from "~/server/utils/validator";
-import { sendEmailVerificationLink } from "~/server/service/emailService";
+import { sendEmailTokenLink, setEmailOptions } from "~/server/service/emailService";
 import { H3Event } from "h3";
+import redis from "~/server/utils/redis";
 
 export const registerSchema = yup.object({
     username: yup
@@ -42,12 +43,14 @@ async function register(event: H3Event) {
             display_name: validated.username,
             email: validated.email,
             password: hashedPassword,
-            verify_token: verifyToken,
             role: "user",
         },
     });
 
-    await sendEmailVerificationLink(user.email, user.username, verifyToken);
+    await redis.set(`account-activation:${user.email}`, verifyToken, { ex: 3600 * 6 });
+
+    setEmailOptions("email-verification.hbs", "Email Activation Link");
+    await sendEmailTokenLink(user.email, "account-activation", verifyToken, { name: user.username });
 
     return { data: exclude(user, ["password"]), message: "register successful! Please check your email" };
 }

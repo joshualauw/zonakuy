@@ -1,7 +1,8 @@
 import { LoginResponse, LoginSchema } from "~/server/api/auth/login.post";
 import { RegisterResponse, RegisterSchema } from "~/server/api/auth/register.post";
-import { EmailResendResponse } from "~/server/api/auth/resend.post";
-import { EmailVerifyResponse, EmailVerifySchema } from "~/server/api/auth/verify.put";
+import { EmailResendResponse, ResendTokenSchema } from "~/server/api/auth/resend.post";
+import { ResetPasswordResponse, ResetPasswordSchema } from "~/server/api/auth/reset.put";
+import { VerifyEmailResponse, VerifyEmailSchema } from "~/server/api/auth/verify.put";
 import fetcher from "~/utils/fetcher";
 
 export default function () {
@@ -44,9 +45,9 @@ export default function () {
         ElNotification({ type: "success", title: "Success", message: "logout successful" });
     }
 
-    async function verifyAccount(form: EmailVerifySchema) {
+    async function verifyToken(form: VerifyEmailSchema) {
         globalLoading.value = true;
-        const res = await useApi<EmailVerifyResponse>({
+        const res = await useApi<VerifyEmailResponse>({
             url: "/api/auth/verify",
             method: "PUT",
             body: form,
@@ -57,16 +58,31 @@ export default function () {
         return res;
     }
 
-    async function resendVerificationLink(email: string | null) {
+    async function resendTokenLink(form: ResendTokenSchema) {
         loading.value = true;
         const res = await useApi<EmailResendResponse>({
             url: "/api/auth/resend",
             method: "POST",
-            body: email,
+            body: form,
         });
         loading.value = false;
         fetcher(res, errors);
+
+        return res;
     }
 
-    return { signUp, signIn, signOut, verifyAccount, resendVerificationLink, errors, loading };
+    async function resetPassword(form: ResetPasswordSchema) {
+        loading.value = true;
+        const res = await useApi<ResetPasswordResponse>({
+            url: "/api/auth/reset",
+            method: "PUT",
+            body: form,
+        });
+        loading.value = false;
+        fetcher(res, errors);
+
+        return res;
+    }
+
+    return { signUp, signIn, signOut, verifyToken, resendTokenLink, resetPassword, errors, loading };
 }

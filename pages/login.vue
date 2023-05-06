@@ -22,25 +22,13 @@
                         The best event platform for hybrid and event meeting, we will wait for your arrivance!
                     </p>
 
-                    <ElForm class="mt-8 space-y-4" label-position="top">
-                        <ElFormItem label="Email">
-                            <ElInput
-                                v-model="form.email"
-                                type="text"
-                                size="large"
-                                :class="{ 'border border-red-500': error.email }"
-                            />
-                            <p v-if="error.email" class="mt-0.5 text-xs text-red-500">{{ error.email }}</p>
+                    <ElForm class="mt-8 space-y-8" label-position="top">
+                        <ElFormItem label="Email" :error="error.email">
+                            <ElInput v-model="form.email" type="text" size="large" />
                         </ElFormItem>
 
-                        <ElFormItem label="Password">
-                            <ElInput
-                                v-model="form.password"
-                                type="password"
-                                size="large"
-                                :class="{ 'border border-red-500': error.password }"
-                            />
-                            <p v-if="error.password" class="mt-0.5 text-xs text-red-500">{{ error.password }}</p>
+                        <ElFormItem label="Password" :error="error.password">
+                            <ElInput v-model="form.password" type="password" size="large" />
                         </ElFormItem>
 
                         <div class="sm:flex sm:items-center sm:gap-4">
@@ -51,9 +39,19 @@
                                 Doesn't have an account?
                                 <NuxtLink to="/register" class="text-gray-700 underline">Register</NuxtLink>.
                             </p>
+                        </div>
+                        <div class="sm:flex sm:items-center sm:gap-4">
                             <p class="mt-4 text-sm text-gray-500 sm:mt-0">
-                                activate an account?
-                                <NuxtLink to="/activate" class="text-gray-700 underline">Activate</NuxtLink>.
+                                Forgot Password?
+                                <NuxtLink to="/activate?context=forgot-password" class="text-gray-700 underline"
+                                    >click here</NuxtLink
+                                >.
+                            </p>
+                            <p class="mt-4 text-sm text-gray-500 sm:mt-0">
+                                Activate an account?
+                                <NuxtLink to="/activate?context=account-activation" class="text-gray-700 underline"
+                                    >click here</NuxtLink
+                                >
                             </p>
                         </div>
                     </ElForm>
@@ -69,7 +67,7 @@ definePageMeta({
     nologin: true,
 });
 
-const { signIn, verifyAccount, loading, errors } = authController();
+const { signIn, verifyToken, loading, errors } = authController();
 const route = useRoute();
 const user = authStore();
 
@@ -80,12 +78,14 @@ const form = reactive({
 const error = computed(() => generateErrorChecks(errors.value, { ...form }));
 
 if (route.query.token && route.query.email) {
-    await verifyAccount({ email: route.query.email as string, token: route.query.token as string });
+    await verifyToken({
+        email: route.query.email as string,
+        token: route.query.token as string,
+    });
+
     route.query.token = null;
     route.query.email = null;
 }
-
-//TODO: add forgot password feature
 
 async function doSignIn() {
     const { error, data } = await signIn({ ...form });

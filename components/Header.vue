@@ -1,7 +1,7 @@
 <template>
     <div class="h-20 shadow-sm bg-gray-900 px-8 md:px-20 flex justify-between items-center">
         <Logo class="text-2xl" invert link />
-        <div v-if="user" class="box space-x-10">
+        <div v-if="user" class="box space-x-12">
             <button
                 @click="$router.push('/event/create')"
                 class="text-white tracking-tight text-sm md:text-base cursor-pointer"
@@ -30,7 +30,6 @@
                         <ElDropdownItem @click="navigateTo(`/profile/${user.username}`)">Profile</ElDropdownItem>
                         <ElDropdownItem @click="navigateTo('/event/wishlist')">Wishlist</ElDropdownItem>
                         <ElDropdownItem @click="navigateTo('/event/manage')">Manage Events</ElDropdownItem>
-                        <ElDropdownItem @click="navigateTo('/event/manage')">Notifications</ElDropdownItem>
                         <ElDropdownItem @click="doSignOut" divided>Log out</ElDropdownItem>
                     </ElDropdownMenu>
                 </template>

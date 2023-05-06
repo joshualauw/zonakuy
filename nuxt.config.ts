@@ -10,6 +10,8 @@ export default defineNuxtConfig({
         SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
         JWT_SECRET: process.env.JWT_SECRET,
         CRYPTO_KEY: process.env.CRYPTO_KEY,
+        UPSTASH_REDIS_URL: process.env.UPSTASH_REDIS_URL,
+        UPSTASH_REDIS_TOKEN: process.env.UPSTASH_REDIS_TOKEN,
         public: {
             BASE_URL: process.env.BASE_URL,
         },
