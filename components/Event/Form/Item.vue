@@ -1,0 +1,16 @@
+<template>
+    <div class="card rounded-md w-full space-y-6">
+        <div class="flex items-center justify-between">
+            <p class="font-semibold">Registration Form</p>
+            <slot name="action"></slot>
+        </div>
+        <div class="space-y-2">
+            <p class="text-sm flex items-center">
+                <Icon name="material-symbols:calendar-month" class="text-gray-500 mr-1 w-4 h-4"></Icon>12 Fields
+            </p>
+            <p class="text-sm flex items-center">
+                <Icon name="material-symbols:timer" class="text-gray-500 mr-1 w-4 h-4"></Icon>30 Responses
+            </p>
+        </div>
+    </div>
+</template>

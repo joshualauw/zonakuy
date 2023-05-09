@@ -10,3 +10,8 @@ export function generateErrorChecks(errors: ValidationError[], props: Record<str
 export function deserialize<T>(payload: any): T {
     return JSON.parse(JSON.stringify(payload));
 }
+
+export function genId(length: number = 6) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    return Array.from(Array(length), () => characters.charAt(Math.floor(Math.random() * characters.length))).join("");
+}

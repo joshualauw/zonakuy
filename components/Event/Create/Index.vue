@@ -18,19 +18,6 @@
             <p v-if="error.description" class="mt-0.5 text-xs text-red-500">{{ error.description }}</p>
         </ElFormItem>
 
-        <ElFormItem label="Price (0 means free)">
-            <ElInput
-                v-model="form.price"
-                type="number"
-                min="0"
-                size="large"
-                :class="{ 'border border-red-500': error.price }"
-            >
-                <template #prepend>Rp. </template>
-            </ElInput>
-            <p v-if="error.price" class="mt-0.5 text-xs text-red-500">{{ error.price }}</p>
-        </ElFormItem>
-
         <ElFormItem label="Limit">
             <ElInput
                 v-model="form.limit"
@@ -98,7 +85,6 @@ const InputRef = ref<InstanceType<typeof ElInput>>();
 const form = useForm({
     name: "",
     description: "",
-    price: 0,
     limit: 1,
     date_range: "",
     tags: [] as string[],

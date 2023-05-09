@@ -1,26 +1,15 @@
 <template>
     <div class="grid grid-cols-4 gap-8 h-[600px] w-full">
-        <div class="lg:col-span-3 h-full relative">
-            <ElTabs v-model="selectedCategory">
-                <ElTabPane
-                    v-for="cat in categories"
-                    :label="cat.label"
-                    :name="cat.label"
-                    class="overflow-hidden h-[575px]"
-                >
-                    <ElScrollbar v-if="cat.label == 'food'" class="rounded-md h-full w-full absolute">
-                        <EventBudgetItem v-for="i in 2">
-                            <template #action>
-                                <div>
-                                    <ElButton @click="modalVisible = true">Edit</ElButton>
-                                    <ElButton @click="deleteModalVisible = true" type="danger">Delete</ElButton>
-                                </div>
-                            </template>
-                        </EventBudgetItem>
-                    </ElScrollbar>
-                </ElTabPane>
-            </ElTabs>
-        </div>
+        <ElScrollbar class="lg:col-span-3 h-full overflow-hidden">
+            <EventBudgetItem v-for="i in 3">
+                <template #action>
+                    <div>
+                        <ElButton @click="modalVisible = true">Edit</ElButton>
+                        <ElButton @click="deleteModalVisible = true" type="danger">Delete</ElButton>
+                    </div>
+                </template>
+            </EventBudgetItem>
+        </ElScrollbar>
         <div class="md:col-span-1 space-y-8 h-full">
             <div class="card rounded-md h-[375px] overflow-hidden">
                 <h3 class="font-semibold mb-4">Activity Log</h3>
@@ -47,7 +36,4 @@ definePageMeta({
 
 const modalVisible = ref(false);
 const deleteModalVisible = ref(false);
-
-const categories = [{ label: "food" }, { label: "ultilities" }, { label: "tech" }];
-const selectedCategory = ref(categories[0].label);
 </script>

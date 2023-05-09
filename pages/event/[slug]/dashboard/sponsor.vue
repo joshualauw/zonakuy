@@ -1,10 +1,10 @@
 <template>
     <div class="grid grid-cols-4 gap-8 h-[600px] w-full">
         <ElScrollbar class="lg:col-span-3 h-full overflow-hidden">
-            <div class="rounded-md h-full w-full grid grid-cols-3 gap-8">
-                <EventSponsorItem v-for="i in 6">
+            <div class="grid grid-cols-3 h-full w-full gap-8">
+                <EventSponsorItem v-for="i in 4">
                     <template #action>
-                        <div>
+                        <div class="">
                             <ElButton @click="modalVisible = true">Edit</ElButton>
                             <ElButton @click="deleteModalVisible = true" type="danger">Delete</ElButton>
                         </div>

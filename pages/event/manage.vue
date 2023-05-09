@@ -1,7 +1,7 @@
 <template>
     <el-tabs v-model="activeName">
         <el-tab-pane label="Managed events" name="managed">
-            <EventItem
+            <EventManage
                 v-if="managedEvents && managedEvents.data.length > 0"
                 v-for="evt in managedEvents.data"
                 :event="evt"
@@ -25,12 +25,12 @@
                         Active
                     </span>
                 </div>
-            </EventItem>
+            </EventManage>
             <p v-else class="text-center text-lg mt-5">-- No Events --</p>
         </el-tab-pane>
 
         <el-tab-pane label="Registered Events" name="registered">
-            <EventItem
+            <EventManage
                 v-if="managedEvents && managedEvents.data.length > 0"
                 v-for="evt in managedEvents.data"
                 :event="evt"
@@ -40,7 +40,7 @@
                     <p class="text-gray-500 text-sm mb-3">Joined at: 24 April 2023</p>
                     <ElButton>Main page</ElButton>
                 </div>
-            </EventItem>
+            </EventManage>
             <p v-else class="text-center text-lg mt-5">-- No Events --</p>
         </el-tab-pane>
     </el-tabs>

@@ -116,7 +116,7 @@ model Form {
   event     Event          @relation(fields: [event_id], references: [id])
   event_id  String         @db.ObjectId
   name      String
-  fields    Json
+  fields    FormField[]
   responses FormResponse[]
   createdAt DateTime       @default(now()) @db.Date
   updatedAt DateTime       @updatedAt @db.Date
@@ -166,6 +166,14 @@ type FormResponse {
   answers Json
 }
 
+type FormField {
+  question String
+  image    String?
+  type     FormType
+  required Boolean
+  options  String[] @default([])
+}
+
 type Log {
   by     String
   action String
@@ -208,6 +216,15 @@ enum LogType {
   certificate
   form
   session
+}
+
+enum FormType {
+  shorttext
+  paragraph
+  checkbox
+  radiobutton
+  fileupload
+  datetime
 }
 
 enum TransactionStatus {

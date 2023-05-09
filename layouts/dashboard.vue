@@ -55,61 +55,64 @@
                 <slot></slot>
             </div>
         </div>
+        <ElDialog v-model="isVisible" title="Helper Dialog" width="40%"></ElDialog>
     </NuxtLayout>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
 const isCollapse = ref(true);
-const route = useRoute();
+const router = useRouter();
 const user = authStore();
 const iconSwap = ref(false);
+const isVisible = ref(false);
 
-//TODO: fix undefined error
+const currentPath = computed(() => router.currentRoute.value);
+
 const sidebarNav = [
     {
         icon: "material-symbols:bar-chart",
         name: "Overview",
-        link: `/event/${route.params.slug}/dashboard/report`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/report`,
     },
     {
         icon: "majesticons:user-group",
         name: "Participant",
-        link: `/event/${route.params.slug}/dashboard/participant`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/participant`,
     },
     {
         icon: "uis:schedule",
         name: "Session",
-        link: `/event/${route.params.slug}/dashboard/session`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/session`,
     },
     {
         icon: "material-symbols:account-balance-wallet",
         name: "Budget",
-        link: `/event/${route.params.slug}/dashboard/budget`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/budget`,
     },
     {
         icon: "mdi:hand-heart",
         name: "Sponsor",
-        link: `/event/${route.params.slug}/dashboard/sponsor`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/sponsor`,
     },
     {
         icon: "material-symbols:edit-document-rounded",
         name: "Form Builder",
-        link: `/event/${route.params.slug}/dashboard/form`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/form`,
     },
     {
         icon: "mdi:certificate",
         name: "Certificate Builder",
-        link: `/event/${route.params.slug}/dashboard/certificate`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/certificate`,
     },
     {
         icon: "material-symbols:settings",
         name: "Settings",
-        link: `/event/${route.params.slug}/dashboard/settings`,
+        link: `/event/${currentPath.value.params.slug}/dashboard/settings`,
     },
 ];
 
-const currentPageName = ref(sidebarNav.find((n) => n.link == route.fullPath)?.name);
+const currentPageName = ref(sidebarNav.find((n) => n.link == currentPath.value.fullPath)?.name);
 
 function goToMenuPage(nav: (typeof sidebarNav)[0]) {
     currentPageName.value = nav.name;

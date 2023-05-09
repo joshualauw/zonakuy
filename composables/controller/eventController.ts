@@ -12,6 +12,7 @@ export default function () {
             url: "/api/event",
             method: "GET",
             query,
+            lazy: true,
         });
         loading.value = false;
         fetcher(res, errors, false);

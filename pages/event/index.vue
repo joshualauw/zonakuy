@@ -1,19 +1,17 @@
 <template>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 w-full">
-        <div class="col-span-2">
-            <EventItem v-if="events" v-for="evt in events.data" :event="evt">
-                <div class="box flex-col h-full rounded-lg">
-                    <p class="font-extrabold text-base md:text-xl">Rp. 25.000</p>
-                    <p class="text-gray-500 text-sm md:text-base mb-4">10 slots left</p>
-                    <ElButton>Register</ElButton>
-                </div>
-            </EventItem>
-        </div>
-        <div>
-            <div class="card hidden sm:block h-[350px] overflow-hidden mb-10">
-                <h1 class="font-bold text-lg mb-5">Organizers</h1>
+    <div v-if="pending" class="grid grid-cols-1 md:grid-cols-3 gap-x-10 w-full">
+        <EventSkeleton v-for="i in 6" />
+    </div>
+    <div v-else class="grid grid-cols-1 md:grid-cols-4 gap-x-10 w-full">
+        <div class="col-span-1 hidden xl:block">
+            <div class="card space-y-4 mb-8">
+                <h1 class="font-bold text-lg">Filter & Search</h1>
+                <ElInput :prefix-icon="Search" size="large" placeholder="Search events..." rounded></ElInput>
+            </div>
+            <div class="card h-[350px] overflow-hidden mb-8">
+                <h1 class="font-bold text-lg mb-5">Top Organizers</h1>
                 <ElScrollbar class="h-full pr-5">
-                    <Avatar v-for="i in 8" name="John Smith" description="12 Events Created">
+                    <Avatar v-for="i in 5" name="John Smith" description="12 Events Created">
                         <template #action> <ElButton type="success" round size="small">visit</ElButton></template>
                         <template #default>
                             <div class="divider"></div>
@@ -21,7 +19,7 @@
                     </Avatar>
                 </ElScrollbar>
             </div>
-            <div class="card hidden sm:block space-y-4">
+            <div class="card h-[400px] space-y-4">
                 <div class="text-center">
                     <h1 class="font-semibold text-lg">Become a Premium Member Now!</h1>
                     <p>and get all the benefits</p>
@@ -31,10 +29,15 @@
                 <div class="box"><ElButton type="warning" size="large">See Details</ElButton></div>
             </div>
         </div>
+        <div class="col-span-4 xl:col-span-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <EventItem v-if="events" v-for="evt in events.data" :event="evt" />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import { Search } from "@element-plus/icons-vue";
+
 definePageMeta({
     public: true,
     layout: "home",
@@ -42,5 +45,5 @@ definePageMeta({
 
 const { getAllEvent } = eventController();
 
-const { data: events } = await getAllEvent({});
+const { data: events, pending } = await getAllEvent({});
 </script>
