@@ -10,17 +10,16 @@ export const verifyEmailSchema = yup.object({
 });
 
 async function verifyEmail(event: H3Event) {
-    const body = await readBody<VerifyEmailSchema>(event);
-    const validated = await schemaValidator<VerifyEmailSchema>(verifyEmailSchema, body);
+    const body = await schemaValidator<VerifyEmailSchema>(verifyEmailSchema, await readBody(event));
 
-    const user = await prisma.user.findFirst({ where: { email: validated.email } });
+    const user = await prisma.user.findFirst({ where: { email: body.email } });
     if (!user) throw createError({ statusCode: 404, message: "user not found" });
 
     if (user.is_verified) {
         throw createError({ statusCode: 401, message: "account already verified" });
     }
 
-    await verifyToken(`account-activation:${user.email}`, validated.token);
+    await verifyToken(`account-activation:${user.email}`, body.token);
     await prisma.user.update({ where: { id: user.id }, data: { is_verified: true } });
 
     return { data: user.id, message: "email verified successfully, account activated!" };

@@ -13,13 +13,12 @@ export const resendTokenSchema = yup.object({
 });
 
 async function resendToken(event: H3Event) {
-    const body = await readBody<ResendTokenSchema>(event);
-    const validated = await schemaValidator<ResendTokenSchema>(resendTokenSchema, body);
+    const body = await schemaValidator<ResendTokenSchema>(resendTokenSchema, await readBody(event));
 
-    const user = await prisma.user.findFirst({ where: { email: validated.email } });
+    const user = await prisma.user.findFirst({ where: { email: body.email } });
     if (!user) throw createError({ statusCode: 400, data: [{ path: "email", message: "user not found" }] });
 
-    const context = validated.context as TokenVerifyContext;
+    const context = body.context as TokenVerifyContext;
     const verifyToken = generateRandomToken();
     let message, payload;
 

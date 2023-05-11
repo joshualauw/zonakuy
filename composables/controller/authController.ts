@@ -11,78 +11,81 @@ export default function () {
     const globalLoading = loadingStore();
     const user = authStore();
 
-    async function signUp(form: RegisterSchema) {
-        loading.value = true;
-        const res = await useApi<RegisterResponse>({
-            url: "/api/auth/register",
-            method: "POST",
-            body: form,
-        });
-        loading.value = false;
-        fetcher(res, errors);
+    return {
+        errors,
+        loading,
 
-        return res;
-    }
+        async signUp(payload: RegisterSchema) {
+            loading.value = true;
+            const res = await useApi<RegisterResponse>({
+                url: "/api/auth/register",
+                method: "POST",
+                body: payload,
+            });
+            loading.value = false;
+            fetcher(res, errors);
 
-    async function signIn(form: LoginSchema) {
-        loading.value = true;
-        const res = await useApi<LoginResponse>({
-            url: "/api/auth/login",
-            method: "POST",
-            body: form,
-        });
-        loading.value = false;
-        fetcher(res, errors);
+            return res;
+        },
 
-        return res;
-    }
+        async signIn(payload: LoginSchema) {
+            loading.value = true;
+            const res = await useApi<LoginResponse>({
+                url: "/api/auth/login",
+                method: "POST",
+                body: payload,
+            });
+            loading.value = false;
+            fetcher(res, errors);
 
-    async function signOut() {
-        const token = useCookie("token");
-        token.value = null;
-        user.value = null;
+            return res;
+        },
 
-        ElNotification({ type: "success", title: "Success", message: "logout successful" });
-    }
+        async signOut() {
+            const token = useCookie("token");
+            token.value = null;
+            user.value = null;
 
-    async function verifyToken(form: VerifyEmailSchema) {
-        globalLoading.value = true;
-        const res = await useApi<VerifyEmailResponse>({
-            url: "/api/auth/verify",
-            method: "PUT",
-            body: form,
-        });
-        globalLoading.value = false;
-        fetcher(res, errors);
+            ElNotification({ type: "success", title: "Success", message: "logout successful" });
+        },
 
-        return res;
-    }
+        async verifyToken(payload: VerifyEmailSchema) {
+            globalLoading.value = true;
+            const res = await useApi<VerifyEmailResponse>({
+                url: "/api/auth/verify",
+                method: "PUT",
+                body: payload,
+            });
+            globalLoading.value = false;
+            fetcher(res, errors);
 
-    async function resendTokenLink(form: ResendTokenSchema) {
-        loading.value = true;
-        const res = await useApi<EmailResendResponse>({
-            url: "/api/auth/resend",
-            method: "POST",
-            body: form,
-        });
-        loading.value = false;
-        fetcher(res, errors);
+            return res;
+        },
 
-        return res;
-    }
+        async resendTokenLink(payload: ResendTokenSchema) {
+            loading.value = true;
+            const res = await useApi<EmailResendResponse>({
+                url: "/api/auth/resend",
+                method: "POST",
+                body: payload,
+            });
+            loading.value = false;
+            fetcher(res, errors);
 
-    async function resetPassword(form: ResetPasswordSchema) {
-        loading.value = true;
-        const res = await useApi<ResetPasswordResponse>({
-            url: "/api/auth/reset",
-            method: "PUT",
-            body: form,
-        });
-        loading.value = false;
-        fetcher(res, errors);
+            return res;
+        },
 
-        return res;
-    }
+        async resetPassword(payload: ResetPasswordSchema) {
+            loading.value = true;
+            const res = await useApi<ResetPasswordResponse>({
+                url: "/api/auth/reset",
+                method: "PUT",
+                body: payload,
+            });
+            loading.value = false;
+            fetcher(res, errors);
 
-    return { signUp, signIn, signOut, verifyToken, resendTokenLink, resetPassword, errors, loading };
+            return res;
+        },
+    };
 }

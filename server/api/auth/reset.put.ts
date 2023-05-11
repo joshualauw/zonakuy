@@ -12,14 +12,13 @@ export const resetPasswordSchema = yup.object({
 });
 
 async function resetPassword(event: H3Event) {
-    const body = await readBody(event);
-    const validated = await schemaValidator<ResetPasswordSchema>(resetPasswordSchema, body);
+    const body = await schemaValidator<ResetPasswordSchema>(resetPasswordSchema, await readBody(event));
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = bcrypt.hashSync(body.password, salt);
 
-    await verifyToken(`forgot-password:${validated.email}`, validated.token);
-    const user = await prisma.user.update({ where: { email: validated.email }, data: { password: hashedPassword } });
+    await verifyToken(`forgot-password:${body.email}`, body.token);
+    const user = await prisma.user.update({ where: { email: body.email }, data: { password: hashedPassword } });
 
     return { data: user, message: "password reset successful!" };
 }

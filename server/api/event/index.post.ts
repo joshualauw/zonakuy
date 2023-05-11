@@ -14,8 +14,6 @@ export const createEventSchema = yup.object({
 });
 
 async function createEvent(event: H3Event) {
-    event.context.protected = true;
-
     const body = await readBody(event);
     const validated = await schemaValidator<CreateEventSchema>(createEventSchema, body);
     const user = event.context.auth as Omit<User, "password">;

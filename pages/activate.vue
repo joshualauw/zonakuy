@@ -26,7 +26,7 @@ const form = useForm({
 });
 const { resendTokenLink, errors, loading } = authController();
 
-const error = computed(() => generateErrorChecks(errors.value, { ...form }));
+const error = computed(() => generateErrors(errors.value));
 
 async function sendLinkEmail() {
     if (route.query.context) {

@@ -74,7 +74,7 @@ const form = useForm({
     password_confirmation: "",
 });
 
-const error = computed(() => generateErrorChecks(errors.value, { ...form }));
+const error = computed(() => generateErrors(errors.value));
 
 async function doSignUp() {
     const { error } = await signUp({ ...form });

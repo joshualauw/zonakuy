@@ -1,10 +1,10 @@
-export function generateErrorChecks(errors: ValidationError[], props: Record<string, any>): Record<string, string> {
-    const result: Record<string, string> = {};
-    Object.keys(props).forEach((prop) => {
-        const errorIndex = errors.map((e) => e.path).findIndex((p) => p == prop);
-        Object.assign(result, { [prop]: errorIndex >= 0 ? errors[errorIndex].message : "" });
+export function generateErrors(errors: ValidationError[]): Record<string, string> {
+    const formattedErrors = {};
+    errors.forEach((error) => {
+        const { path, message } = error;
+        Object.assign(formattedErrors, { [path]: message });
     });
-    return result;
+    return formattedErrors;
 }
 
 export function deserialize<T>(payload: any): T {
@@ -14,4 +14,8 @@ export function deserialize<T>(payload: any): T {
 export function genId(length: number = 6) {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     return Array.from(Array(length), () => characters.charAt(Math.floor(Math.random() * characters.length))).join("");
+}
+
+export function thousandSeparator(x: string | number) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }

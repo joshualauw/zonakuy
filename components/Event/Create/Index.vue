@@ -90,7 +90,7 @@ const form = useForm({
     tags: [] as string[],
 });
 
-const error = computed(() => generateErrorChecks(errors.value, { ...form }));
+const error = computed(() => generateErrors(errors.value));
 
 const showInput = () => {
     inputVisible.value = true;

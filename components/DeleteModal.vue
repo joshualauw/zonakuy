@@ -25,7 +25,6 @@ watch(
 );
 
 function deleteItem() {
-    emits("closed");
     emits("deleted");
 }
 </script>

@@ -1,6 +1,6 @@
 import yup from "yup";
 
-export async function schemaValidator<T>(schema: yup.AnySchema<T>, body: T) {
+export async function schemaValidator<T>(schema: yup.AnySchema<T>, body: T | unknown) {
     try {
         const validated = await schema.validate(body, { abortEarly: false });
         return validated;

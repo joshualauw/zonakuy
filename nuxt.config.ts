@@ -12,6 +12,9 @@ export default defineNuxtConfig({
         CRYPTO_KEY: process.env.CRYPTO_KEY,
         UPSTASH_REDIS_URL: process.env.UPSTASH_REDIS_URL,
         UPSTASH_REDIS_TOKEN: process.env.UPSTASH_REDIS_TOKEN,
+        CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+        CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+        CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
         public: {
             BASE_URL: process.env.BASE_URL,
         },

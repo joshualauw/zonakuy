@@ -55,7 +55,6 @@
                 <slot></slot>
             </div>
         </div>
-        <ElDialog v-model="isVisible" title="Helper Dialog" width="40%"></ElDialog>
     </NuxtLayout>
 </template>
 
@@ -65,7 +64,6 @@ const isCollapse = ref(true);
 const router = useRouter();
 const user = authStore();
 const iconSwap = ref(false);
-const isVisible = ref(false);
 
 const currentPath = computed(() => router.currentRoute.value);
 

@@ -11,17 +11,16 @@ const loginSchema = yup.object({
 });
 
 async function login(event: H3Event) {
-    const body = await readBody(event);
-    const validated = await schemaValidator<LoginSchema>(loginSchema, body);
+    const body = await schemaValidator<LoginSchema>(loginSchema, await readBody(event));
     const config = useRuntimeConfig();
 
-    const user = await prisma.user.findFirst({ where: { email: validated.email } });
+    const user = await prisma.user.findFirst({ where: { email: body.email } });
     if (!user) throw createError({ statusCode: 404, message: "user not found" });
 
     if (!user.is_verified) {
         throw createError({ statusCode: 401, message: "your account is not verified" });
     }
-    if (!(await bcrypt.compare(validated.password, user.password))) {
+    if (!(await bcrypt.compare(body.password, user.password))) {
         throw createError({ statusCode: 401, message: "invalid credentials" });
     }
     if (user.is_banned) {

@@ -2,11 +2,11 @@
     <div class="grid grid-cols-4 gap-8 h-[600px] w-full">
         <ElScrollbar class="lg:col-span-3 h-full overflow-hidden">
             <div class="grid grid-cols-3 h-full w-full gap-8">
-                <EventSponsorItem v-for="i in 4">
+                <EventSponsorItem v-if="sponsors" v-for="sponsor in sponsors.data" :sponsor="sponsor">
                     <template #action>
                         <div class="">
-                            <ElButton @click="modalVisible = true">Edit</ElButton>
-                            <ElButton @click="deleteModalVisible = true" type="danger">Delete</ElButton>
+                            <ElButton @click="openEditModal(sponsor.id)">Edit</ElButton>
+                            <ElButton @click="openDeleteModal(sponsor.id)" type="danger">Delete</ElButton>
                         </div>
                     </template>
                 </EventSponsorItem>
@@ -20,15 +20,20 @@
             <div class="card rounded-md h-[225px]">
                 <h3 class="font-semibold mb-4">Actions</h3>
                 <div class="grid grid-cols-1 gap-4">
-                    <button @click="modalVisible = true" class="action-button">
+                    <button @click="openCreateModal" class="action-button">
                         <Icon name="material-symbols:add" class="w-6 h-6 mb-1"></Icon> Create Sponsor
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <EventSponsorCreate @closed="modalVisible = false" :visible="modalVisible" />
-    <DeleteModal title="Delete Sponsor" @closed="deleteModalVisible = false" :visible="deleteModalVisible" />
+    <EventSponsorCreate @closed="modalVisible = false" @saved="refresh" :visible="modalVisible" :edit-id="sponsorId" />
+    <DeleteModal
+        title="Delete Sponsor"
+        @deleted="doDeleteSponsor"
+        @closed="deleteModalVisible = false"
+        :visible="deleteModalVisible"
+    />
 </template>
 
 <script setup lang="ts">
@@ -36,6 +41,35 @@ definePageMeta({
     layout: "dashboard",
 });
 
+const { getAllSponsor, deleteSponsor } = sponsorController();
+
+const route = useRoute();
 const modalVisible = ref(false);
 const deleteModalVisible = ref(false);
+const sponsorId = ref("");
+
+const { data: sponsors, refresh } = await getAllSponsor({ slug: route.params.slug as string });
+
+function openEditModal(id: string) {
+    modalVisible.value = true;
+    sponsorId.value = id;
+}
+
+function openCreateModal() {
+    modalVisible.value = true;
+    sponsorId.value = "";
+}
+
+function openDeleteModal(id: string) {
+    deleteModalVisible.value = true;
+    sponsorId.value = id;
+}
+
+async function doDeleteSponsor() {
+    const { error } = await deleteSponsor(sponsorId.value);
+    if (!error.value) {
+        deleteModalVisible.value = false;
+        refresh();
+    }
+}
 </script>

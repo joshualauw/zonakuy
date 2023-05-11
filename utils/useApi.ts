@@ -6,7 +6,6 @@ type UseApiOptions = {
     headers?: Record<string, string>;
     body?: any;
     query?: any;
-    params?: any;
     lazy?: boolean;
 };
 
@@ -14,7 +13,11 @@ export function useApi<T>({ url, method = "GET", headers = {}, lazy = false, ...
     const user = authStore();
     const authHeader = user.value ? { Authorization: `Bearer ${user.value.token}` } : {};
     const mergedHeaders = { ...headers, ...authHeader };
-    //TODO: implement fetcher here
-    //@ts-ignore
-    return useAsyncData(url.toString(), () => $fetch<T>(url, { headers: mergedHeaders, method, ...options }), { lazy });
+
+    return useAsyncData(
+        `${url.toString()}:${method}`,
+        //@ts-ignore
+        () => $fetch<T>(url, { headers: mergedHeaders, method, ...options }),
+        { lazy }
+    );
 }

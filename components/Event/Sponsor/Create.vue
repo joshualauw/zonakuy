@@ -1,34 +1,21 @@
 <template>
     <ClientOnly>
-        <ElDialog v-model="isVisible" @close="$emit('closed')" title="Create Sponsor" width="40%" class="rounded-md">
+        <ElDialog v-model="isVisible" @close="closeModal" title="Create Sponsor" width="40%" class="rounded-md">
             <ElForm label-position="top">
-                <ElFormItem label="Logo">
-                    <UploadSingle @file-changed="fileChange" />
-                    <p v-if="error.logo" class="mt-0.5 text-xs text-red-500">{{ error.logo }}</p>
+                <ElFormItem label="Logo" :error="error.logo">
+                    <UploadSingle :file-list="fileList" @file-changed="fileChange" @file-removed="form.logo = ''" />
                 </ElFormItem>
-                <ElFormItem label="Sponsor Name">
-                    <ElInput
-                        v-model="form.name"
-                        type="text"
-                        size="large"
-                        :class="{ 'border border-red-500': error.name }"
-                    />
-                    <p v-if="error.name" class="mt-0.5 text-xs text-red-500">{{ error.name }}</p>
+                <ElFormItem label="Sponsor Name" :error="error.name">
+                    <ElInput v-model="form.name" type="text" size="large" />
                 </ElFormItem>
-                <ElFormItem label="Sponsor Description">
-                    <ElInput
-                        v-model="form.description"
-                        type="textarea"
-                        :rows="3"
-                        :class="{ 'border border-red-500': error.description }"
-                    />
-                    <p v-if="error.description" class="mt-0.5 text-xs text-red-500">{{ error.description }}</p>
+                <ElFormItem label="Sponsor Description" :error="error.description">
+                    <ElInput v-model="form.description" type="textarea" :rows="3" />
                 </ElFormItem>
             </ElForm>
             <template #footer>
                 <span class="dialog-footer">
-                    <el-button @click="$emit('closed')">Cancel</el-button>
-                    <el-button type="primary" @click="createSponsor">Save</el-button>
+                    <ElButton @click="closeModal">Cancel</ElButton>
+                    <ElButton type="primary" @click="doSaveSponsor" :loading="loading">Save</ElButton>
                 </span>
             </template>
         </ElDialog>
@@ -36,30 +23,67 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ visible: boolean }>();
-const emits = defineEmits(["closed"]);
+import type { UploadUserFile } from "element-plus";
+
+const props = defineProps<{ visible: boolean; editId?: any }>();
+const emits = defineEmits(["closed", "saved"]);
 const isVisible = ref(props.visible);
+const fileList = ref<UploadUserFile[]>([]);
+
 watch(
     () => props.visible,
-    (val) => {
+    async (val) => {
         isVisible.value = val;
+
+        if (props.editId && val) {
+            const { data, error } = await getOneSponsor(props.editId);
+            if (!error.value && data.value) {
+                const { name, logo, description } = data.value.data;
+                if (logo) fileList.value[0] = { name, url: logo };
+                form.name = name;
+                form.description = description;
+            }
+        } else {
+            form.reset();
+            fileList.value = [];
+        }
     }
 );
 
+const { createSponsor, getOneSponsor, updateSponsor, errors, loading } = sponsorController();
+const route = useRoute();
+
 const form = useForm({
     name: "",
-    logo: null,
+    logo: "",
     description: "",
 });
 
-const error = { ...form };
+const error = computed(() => generateErrors(errors.value));
+
+function closeModal() {
+    errors.value = [];
+    emits("closed");
+}
 
 function fileChange(file: any) {
     form.logo = file;
+    console.log(form.logo);
 }
 
-function createSponsor() {
-    // logic here
-    emits("closed");
+async function doSaveSponsor() {
+    let error: globalThis.Ref<Error | null>;
+    if (props.editId) {
+        const { error: updateError } = await updateSponsor({ ...form }, props.editId);
+        error = updateError;
+    } else {
+        const { error: createError } = await createSponsor({ ...form, slug: route.params.slug as string });
+        error = createError;
+    }
+
+    if (!error.value) {
+        closeModal();
+        emits("saved");
+    }
 }
 </script>

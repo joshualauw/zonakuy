@@ -75,7 +75,7 @@ const form = reactive({
     email: "",
     password: "",
 });
-const error = computed(() => generateErrorChecks(errors.value, { ...form }));
+const error = computed(() => generateErrors(errors.value));
 
 if (route.query.token && route.query.email) {
     await verifyToken({

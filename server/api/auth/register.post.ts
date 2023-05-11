@@ -20,28 +20,26 @@ export const registerSchema = yup.object({
 });
 
 async function register(event: H3Event) {
-    const body = await readBody(event);
-    const validated = await schemaValidator<RegisterSchema>(registerSchema, body);
+    const body = await schemaValidator<RegisterSchema>(registerSchema, await readBody(event));
 
-    const usernameExist = await prisma.user.findFirst({ where: { username: validated.username } });
+    const usernameExist = await prisma.user.findFirst({ where: { username: body.username } });
     if (usernameExist) {
         throw createError({ statusCode: 400, data: [{ path: "username", message: "username already exist" }] });
     }
 
-    const emailExist = await prisma.user.findFirst({ where: { email: validated.email } });
+    const emailExist = await prisma.user.findFirst({ where: { email: body.email } });
     if (emailExist) {
         throw createError({ statusCode: 400, data: [{ path: "email", message: "email already exist" }] });
     }
 
     const verifyToken = generateRandomToken();
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = bcrypt.hashSync(validated.password, salt);
+    const hashedPassword = bcrypt.hashSync(body.password, salt);
 
     const user = await prisma.user.create({
         data: {
-            username: validated.username,
-            display_name: validated.username,
-            email: validated.email,
+            ...exclude(body, ["password_confirmation"]),
+            display_name: body.username,
             password: hashedPassword,
             role: "user",
         },
