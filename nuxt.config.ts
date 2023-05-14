@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         dirs: ["composables", "composables/*/index.{ts,js,mjs,mts}", "composables/**"],
     },
 
-    modules: ["@nuxtjs/tailwindcss", "@element-plus/nuxt", "nuxt-icon", "@nuxt/image-edge"],
+    modules: ["@nuxtjs/tailwindcss", "@element-plus/nuxt", "nuxt-icon", "@nuxt/image-edge", "nuxt-typed-router"],
     image: { domains: ["localhost", "netlify"], provider: "ipx" },
 
     alias: {

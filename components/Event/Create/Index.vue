@@ -125,7 +125,7 @@ async function doSaveEvent() {
     }
 
     if (!error.value && data.value) {
-        emits("saved", data.value.data.slug);
+        emits("saved", data.value.data.id);
     }
 }
 </script>

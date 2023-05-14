@@ -100,7 +100,7 @@ async function doSaveSession() {
         const { error: createError } = await createSession({
             ...form,
             time: timeFormat,
-            slug: route.params.slug as string,
+            event_id: (route.params as { id: string }).id as string,
         });
         error = createError;
     }

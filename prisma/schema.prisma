@@ -36,7 +36,6 @@ model Event {
   user        User          @relation(fields: [user_id], references: [id])
   user_id     String        @db.ObjectId
   name        String
-  slug        String
   description String
   banner      String?
   gallery     String[]      @default([])

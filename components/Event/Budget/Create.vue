@@ -107,7 +107,10 @@ async function doSaveBudget() {
         let { error: updateError } = await updateBudget({ ...form }, props.editId);
         error = updateError;
     } else {
-        const { error: createError } = await createBudget({ ...form, slug: route.params.slug as string });
+        const { error: createError } = await createBudget({
+            ...form,
+            event_id: (route.params as { id: string }).id as string,
+        });
         error = createError;
     }
 

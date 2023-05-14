@@ -47,7 +47,7 @@ const modalVisible = ref(false);
 const deleteModalVisible = ref(false);
 const budgetId = ref("");
 
-const { data: budgets, refresh } = await getAllBudget({ slug: route.params.slug as string });
+const { data: budgets, refresh } = await getAllBudget({ id: (route.params as { id: string }).id as string });
 
 function openEditModal(id: string) {
     modalVisible.value = true;

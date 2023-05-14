@@ -49,7 +49,7 @@ const modalVisible = ref(false);
 const deleteModalVisible = ref(false);
 const sponsorId = ref("");
 
-const { data: sponsors, refresh } = await getAllSponsor({ slug: route.params.slug as string });
+const { data: sponsors, refresh } = await getAllSponsor({ id: (route.params as { id: string }).id as string });
 
 function openEditModal(id: string) {
     modalVisible.value = true;

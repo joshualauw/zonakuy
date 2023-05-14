@@ -11,7 +11,7 @@
                         <ElButton><Icon name="material-symbols:settings" class="w-4 h-4 mr-1" />Options</ElButton>
                         <template #dropdown>
                             <ElDropdownMenu>
-                                <ElDropdownItem @click="navigateTo(`/event/${evt.slug}/dashboard/report`)">
+                                <ElDropdownItem @click="navigateTo(`/event/${evt.id}/dashboard/report`)">
                                     <Icon name="material-symbols:edit" class="mr-1 w-4 h-4"></Icon> edit
                                 </ElDropdownItem>
                                 <ElDropdownItem>

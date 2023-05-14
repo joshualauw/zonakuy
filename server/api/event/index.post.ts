@@ -22,7 +22,6 @@ async function createEvent(event: H3Event) {
             start_date: body.date_range[0],
             end_date: body.date_range[1],
             user_id: user.id,
-            slug: slugify(body.name),
             price: 0,
             ...exclude(body, ["date_range"]),
         },

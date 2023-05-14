@@ -9,7 +9,7 @@ const expenseSchema = yup.object({
 });
 
 export const createBudgetSchema = yup.object({
-    slug: yup.string().required(),
+    event_id: yup.string().required(),
     name: yup.string().required(),
     limit: yup.number().min(0).required(),
     category: yup.string().required(),
@@ -19,13 +19,12 @@ export const createBudgetSchema = yup.object({
 async function createBudget(event: H3Event) {
     const body = await schemaValidator<CreateBudgetSchema>(createBudgetSchema, await readBody(event));
 
-    const eventExist = await prisma.event.findFirst({ where: { slug: body.slug } });
+    const eventExist = await prisma.event.findFirst({ where: { id: body.event_id } });
     if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
 
     const budget = await prisma.budget.create({
         data: {
-            ...exclude(body, ["slug"]),
-            event_id: eventExist.id,
+            ...body,
             current: body.expenses.reduce((total, cur) => total + cur.amount, 0),
         },
     });

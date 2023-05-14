@@ -6,7 +6,7 @@ import { handleFileStream } from "~/server/utils/uploadFile";
 import { uploadSponsorLogo } from "~/server/service/fileUploadService";
 
 export const createSponsorSchema = yup.object({
-    slug: yup.string().required(),
+    event_id: yup.string().required(),
     logo: yup.string().required(),
     name: yup.string().required(),
     description: yup.string().required(),
@@ -16,14 +16,11 @@ async function createSponsor(event: H3Event) {
     const stream = await handleFileStream(event.node.req);
     const body = await schemaValidator<CreateSponsorSchema>(createSponsorSchema, stream);
 
-    const eventExist = await prisma.event.findFirst({ where: { slug: body.slug } });
+    const eventExist = await prisma.event.findFirst({ where: { id: body.event_id } });
     if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
 
     const sponsor = await prisma.sponsor.create({
-        data: {
-            ...exclude(body, ["slug"]),
-            event_id: eventExist.id,
-        },
+        data: body,
     });
 
     await uploadSponsorLogo(sponsor.id, stream.logo);

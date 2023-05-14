@@ -12,7 +12,7 @@ definePageMeta({
     layout: "home",
 });
 
-function goToEventDashboard(slug: string) {
-    navigateTo(`/event/${slug}/dashboard/report`);
+function goToEventDashboard(id: string) {
+    navigateTo(`/event/${id}/dashboard/report`);
 }
 </script>

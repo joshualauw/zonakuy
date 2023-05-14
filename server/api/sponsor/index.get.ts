@@ -3,14 +3,14 @@ import { H3Event } from "h3";
 import prisma from "~/server/utils/prismaClient";
 
 export interface GetAllSponsorQuery {
-    slug?: string;
+    id?: string;
 }
 async function getAllSponsor(event: H3Event) {
     const query = getQuery(event) as unknown as GetAllSponsorQuery;
     const parameter = {};
 
-    if (query.slug) {
-        const eventExist = await prisma.event.findFirst({ where: { slug: query.slug } });
+    if (query.id) {
+        const eventExist = await prisma.event.findFirst({ where: { id: query.id } });
         if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
         Object.assign(parameter, { event_id: eventExist.id });
     }

@@ -51,7 +51,7 @@ export default function () {
             form.append("logo", payload.logo);
             form.append("name", payload.name);
             form.append("description", payload.description);
-            form.append("slug", payload.slug);
+            form.append("event_id", payload.event_id);
 
             loading.value = true;
             const res = await useApi<CreateSponsorResponse>({ url: "/api/sponsor", method: "POST", body: form });

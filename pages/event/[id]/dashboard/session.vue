@@ -55,7 +55,7 @@ const sessionId = ref("");
 
 const { getAllSession } = sessionController();
 
-const { data: sessions, refresh } = await getAllSession({ slug: route.query.slug as string });
+const { data: sessions, refresh } = await getAllSession({ id: (route.params as { id: string }).id as string });
 
 function openSpeakerModal(id: string) {
     speakerModalVisible.value = true;
