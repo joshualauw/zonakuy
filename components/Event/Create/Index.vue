@@ -1,11 +1,10 @@
 <template>
     <ElForm label-position="top">
-        <ElFormItem label="Name">
-            <ElInput v-model="form.name" type="text" size="large" :class="{ 'border border-red-500': error.name }" />
-            <p v-if="error.name" class="mt-0.5 text-xs text-red-500">{{ error.name }}</p>
+        <ElFormItem label="Name" :error="error.name">
+            <ElInput v-model="form.name" type="text" size="large" />
         </ElFormItem>
 
-        <ElFormItem label="Description">
+        <ElFormItem label="Description" :error="error.description">
             <ElInput
                 v-model="form.description"
                 type="textarea"
@@ -13,25 +12,16 @@
                 resize="none"
                 maxlength="3000"
                 show-word-limit
-                :class="{ 'border border-red-500': error.description }"
             />
-            <p v-if="error.description" class="mt-0.5 text-xs text-red-500">{{ error.description }}</p>
         </ElFormItem>
 
-        <ElFormItem label="Limit">
-            <ElInput
-                v-model="form.limit"
-                type="number"
-                min="1"
-                size="large"
-                :class="{ 'border border-red-500': error.price }"
-            >
+        <ElFormItem label="Limit" :error="error.limit">
+            <ElInput v-model="form.limit" type="number" min="1" size="large">
                 <template #append>Users</template>
             </ElInput>
-            <p v-if="error.limit" class="mt-0.5 text-xs text-red-500">{{ error.limit }}</p>
         </ElFormItem>
 
-        <ElFormItem label="Date" class="flex flex-col">
+        <ElFormItem label="Date" class="flex flex-col" :error="error.date_range">
             <el-date-picker
                 v-model="form.date_range"
                 size="large"
@@ -40,10 +30,9 @@
                 start-placeholder="Start date"
                 end-placeholder="End date"
             />
-            <p v-if="error.date_range" class="mt-0.5 text-xs text-red-500">{{ error.date_range }}</p>
         </ElFormItem>
 
-        <ElFormItem label="Tags">
+        <ElFormItem label="Tags" :error="error.tags">
             <ElTag
                 v-for="tag in form.tags"
                 :key="tag"
@@ -64,9 +53,8 @@
                 @blur="createTag"
             />
             <ElButton v-else class="button-new-tag ml-1" @click="showInput"> + New Tag </ElButton>
-            <p v-if="error.tags" class="mt-0.5 text-xs text-red-500">{{ error.tags }}</p>
         </ElFormItem>
-        <ElButton @click="doCreateEvent" type="success" size="large" class="float-right" :loading="loading">
+        <ElButton @click="doSaveEvent" type="success" size="large" class="float-right" :loading="loading">
             Save
         </ElButton>
     </ElForm>
@@ -74,9 +62,10 @@
 
 <script setup lang="ts">
 import { ElInput } from "element-plus";
-const { createEvent, errors, loading } = eventController();
+const { createEvent, updateEvent, getOneEvent, errors, loading } = eventController();
 
-const emits = defineEmits(["success"]);
+const props = defineProps<{ editId?: any }>();
+const emits = defineEmits(["saved"]);
 
 const newTag = ref("");
 const inputVisible = ref(false);
@@ -86,9 +75,21 @@ const form = useForm({
     name: "",
     description: "",
     limit: 1,
-    date_range: "",
+    date_range: [] as unknown as [Date, Date],
     tags: [] as string[],
 });
+
+if (props.editId) {
+    const { data: event, error } = await getOneEvent(props.editId);
+    if (!error.value && event.value) {
+        const { name, description, limit, start_date, end_date, tags } = event.value.data;
+        form.name = name;
+        form.description = description;
+        form.limit = limit;
+        form.date_range = [start_date, end_date];
+        form.tags = tags;
+    }
+}
 
 const error = computed(() => generateErrors(errors.value));
 
@@ -109,11 +110,22 @@ function createTag() {
     newTag.value = "";
 }
 
-async function doCreateEvent() {
-    //@ts-ignore: string will be validated to array
-    const { error, data } = await createEvent({ ...form });
+async function doSaveEvent() {
+    let error: globalThis.Ref<Error | null>;
+    let data;
+
+    if (props.editId) {
+        const { error: updateError, data: updateData } = await updateEvent({ ...form }, props.editId);
+        error = updateError;
+        data = updateData;
+    } else {
+        const { error: createError, data: createData } = await createEvent({ ...form });
+        error = createError;
+        data = createData;
+    }
+
     if (!error.value && data.value) {
-        emits("success", data.value.data.slug);
+        emits("saved", data.value.data.slug);
     }
 }
 </script>

@@ -65,6 +65,15 @@ const router = useRouter();
 const user = authStore();
 const iconSwap = ref(false);
 
+const { getOneEvent } = eventController();
+
+const route = useRoute();
+
+const { error } = await getOneEvent(route.params.slug as string);
+if (error.value) {
+    throw createError({ statusCode: 404, statusMessage: "Page Not Found" });
+}
+
 const currentPath = computed(() => router.currentRoute.value);
 
 const sidebarNav = [

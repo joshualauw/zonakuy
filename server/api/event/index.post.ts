@@ -9,23 +9,22 @@ export const createEventSchema = yup.object({
     name: yup.string().required(),
     description: yup.string().required(),
     limit: yup.number().required().min(1),
-    date_range: yup.array(yup.string().required()).min(2).required(),
+    date_range: yup.array(yup.date().required()).min(2).required(),
     tags: yup.array(yup.string().required()).required().min(1),
 });
 
 async function createEvent(event: H3Event) {
-    const body = await readBody(event);
-    const validated = await schemaValidator<CreateEventSchema>(createEventSchema, body);
+    const body = await schemaValidator<CreateEventSchema>(createEventSchema, await readBody(event));
     const user = event.context.auth as Omit<User, "password">;
 
     const _event = await prisma.event.create({
         data: {
-            start_date: validated.date_range[0],
-            end_date: validated.date_range[1],
+            start_date: body.date_range[0],
+            end_date: body.date_range[1],
             user_id: user.id,
-            slug: slugify(validated.name),
+            slug: slugify(body.name),
             price: 0,
-            ...exclude(validated, ["date_range"]),
+            ...exclude(body, ["date_range"]),
         },
     });
 

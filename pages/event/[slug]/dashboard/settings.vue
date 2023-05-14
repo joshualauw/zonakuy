@@ -5,7 +5,7 @@
                 <ElTabPane label="Detail" name="detail" class="pl-8 overflow-hidden h-[630px]">
                     <ElScrollbar class="card rounded-md">
                         <h3 class="text-lg font-semibold mb-4">Edit Event Details</h3>
-                        <EventCreate />
+                        <EventCreate @saved="updateSlug" :edit-id="$route.params.slug" />
                     </ElScrollbar>
                 </ElTabPane>
                 <ElTabPane label="Location" name="location" class="pl-8 overflow-hidden h-[630px]">
@@ -17,7 +17,9 @@
                 <ElTabPane label="Images" name="gallery" class="pl-8 overflow-hidden h-[630px]">
                     <ElScrollbar class="card rounded-md">
                         <h3 class="text-lg font-semibold mb-4">Add Event Images</h3>
-                        <EventCreateGallery />
+                        <ClientOnly>
+                            <EventCreateGallery />
+                        </ClientOnly>
                     </ElScrollbar>
                 </ElTabPane>
                 <ElTabPane label="Payment" name="payment" class="pl-8 overflow-hidden h-[630px]">
@@ -43,4 +45,10 @@ definePageMeta({
 });
 
 const activeTab = ref("detail");
+const router = useRouter();
+
+function updateSlug(newSlug: string) {
+    router.currentRoute.value.params.slug = newSlug;
+    window.location.reload();
+}
 </script>

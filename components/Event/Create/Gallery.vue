@@ -1,7 +1,7 @@
 <template>
     <ElForm label-position="top">
         <ElFormItem label="Event Banner">
-            <UploadSingle />
+            <UploadSingle :file-list="fileList" />
         </ElFormItem>
         <ElFormItem label="Event Gallery">
             <UploadMultiple />
@@ -13,7 +13,10 @@
 </template>
 
 <script lang="ts" setup>
+import type { UploadUserFile } from "element-plus";
 const emits = defineEmits(["success"]);
+
+const fileList = ref<UploadUserFile[]>([]);
 
 function doUploadImageEvent() {
     emits("success", true);

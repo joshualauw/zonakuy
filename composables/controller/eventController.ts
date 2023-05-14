@@ -1,37 +1,64 @@
 import { CreateEventResponse, CreateEventSchema } from "~/server/api/event/index.post";
 import { GetAllEventQuery, GetAllEventResponse } from "./../../server/api/event/index.get";
 import fetcher from "~/utils/fetcher";
+import { GetOneEventResponse } from "~/server/api/event/[slug]/index.get";
+import { UpdateEventSchema } from "~/server/api/event/[slug]/index.put";
 
 export default function () {
     const errors = ref<ValidationError[]>([]);
     const loading = ref(false);
 
-    async function getAllEvent(query: GetAllEventQuery) {
-        loading.value = true;
-        const res = await useApi<GetAllEventResponse>({
-            url: "/api/event",
-            method: "GET",
-            query,
-            lazy: true,
-        });
-        loading.value = false;
-        fetcher(res, errors, false);
+    return {
+        errors,
+        loading,
 
-        return res;
-    }
+        async getAllEvent(query: GetAllEventQuery) {
+            loading.value = true;
+            const res = await useApi<GetAllEventResponse>({
+                url: "/api/event",
+                query,
+                lazy: true,
+            });
+            loading.value = false;
 
-    async function createEvent(form: CreateEventSchema) {
-        loading.value = true;
-        const res = await useApi<CreateEventResponse>({
-            url: "/api/event",
-            method: "POST",
-            body: form,
-        });
-        loading.value = false;
-        fetcher(res, errors);
+            return res;
+        },
 
-        return res;
-    }
+        async getOneEvent(slug: string) {
+            loading.value = true;
+            const res = await useApi<GetOneEventResponse>({
+                url: `/api/event/${slug}`,
+                method: "GET",
+            });
+            loading.value = false;
 
-    return { createEvent, getAllEvent, errors, loading };
+            return res;
+        },
+
+        async createEvent(payload: CreateEventSchema) {
+            loading.value = true;
+            const res = await useApi<CreateEventResponse>({
+                url: "/api/event",
+                method: "POST",
+                body: payload,
+            });
+            loading.value = false;
+            fetcher(res, errors);
+
+            return res;
+        },
+
+        async updateEvent(payload: UpdateEventSchema, editId: string) {
+            loading.value = true;
+            const res = await useApi<CreateEventResponse>({
+                url: `/api/event/${editId}`,
+                method: "PUT",
+                body: payload,
+            });
+            loading.value = false;
+            fetcher(res, errors);
+
+            return res;
+        },
+    };
 }
