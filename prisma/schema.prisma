@@ -56,6 +56,7 @@ model Event {
   Participant Participant[]
   Budget      Budget[]
   Form        Form[]
+  Session     Session[]
 }
 
 model Participant {
@@ -101,11 +102,13 @@ model Budget {
 
 model Session {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  event       Event     @relation(fields: [event_id], references: [id])
+  event_id    String    @db.ObjectId
   title       String
   description String
   day         DateTime
-  start_time  DateTime
-  end_time    DateTime
+  start_time  String
+  end_time    String
   speaker     Speaker[]
   createdAt   DateTime  @default(now()) @db.Date
   updatedAt   DateTime  @updatedAt @db.Date

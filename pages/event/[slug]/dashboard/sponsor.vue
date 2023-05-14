@@ -42,6 +42,7 @@ definePageMeta({
 });
 
 const { getAllSponsor, deleteSponsor } = sponsorController();
+const globalLoading = loadingStore();
 
 const route = useRoute();
 const modalVisible = ref(false);
@@ -66,7 +67,9 @@ function openDeleteModal(id: string) {
 }
 
 async function doDeleteSponsor() {
+    globalLoading.value = true;
     const { error } = await deleteSponsor(sponsorId.value);
+    globalLoading.value = false;
     if (!error.value) {
         deleteModalVisible.value = false;
         refresh();

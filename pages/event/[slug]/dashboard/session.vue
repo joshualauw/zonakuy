@@ -2,11 +2,16 @@
     <div class="grid grid-cols-4 gap-8 h-[600px] w-full">
         <div class="lg:col-span-3 h-full relative overflow-hidden">
             <ElScrollbar class="rounded-md h-full w-full absolute">
-                <EventSessionItem @add-speaker="speakerModalVisible = true" v-for="i in 3">
+                <EventSessionItem
+                    v-if="sessions"
+                    v-for="session in sessions.data"
+                    @add-speaker="openSpeakerModal(session.id)"
+                    :session="session"
+                >
                     <template #action>
                         <div>
-                            <ElButton @click="modalVisible = true">Edit</ElButton>
-                            <ElButton @click="deleteModalVisible = true" type="danger">Delete</ElButton>
+                            <ElButton @click="openEditModal(session.id)">Edit</ElButton>
+                            <ElButton @click="openDeleteModal(session.id)" type="danger">Delete</ElButton>
                         </div>
                     </template>
                 </EventSessionItem>
@@ -20,15 +25,20 @@
             <div class="card rounded-md h-[225px]">
                 <h3 class="font-semibold mb-4">Actions</h3>
                 <div class="grid grid-cols-1 gap-4">
-                    <button @click="modalVisible = true" class="action-button">
+                    <button @click="openCreateModal" class="action-button">
                         <Icon name="material-symbols:add" class="w-6 h-6 mb-1"></Icon> Create Session
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <EventSessionSpeakerCreate @closed="speakerModalVisible = false" :visible="speakerModalVisible" />
-    <EventSessionCreate @closed="modalVisible = false" :visible="modalVisible" />
+    <EventSessionSpeakerCreate
+        @saved="refresh"
+        @closed="speakerModalVisible = false"
+        :edit-id="sessionId"
+        :visible="speakerModalVisible"
+    />
+    <EventSessionCreate @saved="refresh" @closed="modalVisible = false" :visible="modalVisible" :edit-id="sessionId" />
     <DeleteModal title="Delete Session" @closed="deleteModalVisible = false" :visible="deleteModalVisible" />
 </template>
 
@@ -37,7 +47,33 @@ definePageMeta({
     layout: "dashboard",
 });
 
+const route = useRoute();
 const modalVisible = ref(false);
 const deleteModalVisible = ref(false);
 const speakerModalVisible = ref(false);
+const sessionId = ref("");
+
+const { getAllSession } = sessionController();
+
+const { data: sessions, refresh } = await getAllSession({ slug: route.query.slug as string });
+
+function openSpeakerModal(id: string) {
+    speakerModalVisible.value = true;
+    sessionId.value = id;
+}
+
+function openEditModal(id: string) {
+    modalVisible.value = true;
+    sessionId.value = id;
+}
+
+function openCreateModal() {
+    modalVisible.value = true;
+    sessionId.value = "";
+}
+
+function openDeleteModal(id: string) {
+    deleteModalVisible.value = true;
+    sessionId.value = id;
+}
 </script>

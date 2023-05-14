@@ -27,7 +27,7 @@ const _fileList = ref<UploadUserFile[]>([]);
 watch(
     () => props.fileList,
     (val) => {
-        _fileList.value = [...val];
+        _fileList.value = val && val.length > 0 ? [...val] : [];
     },
     { deep: true }
 );

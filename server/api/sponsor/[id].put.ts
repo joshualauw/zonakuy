@@ -12,7 +12,6 @@ export const updateSponsorSchema = yup.object({
 
 async function updateSponsor(event: H3Event) {
     const stream = await handleFileStream(event.node.req);
-    console.log(stream);
     const body = await schemaValidator<UpdateSponsorSchema>(updateSponsorSchema, stream);
     const params = event.context.params as { id: string };
 

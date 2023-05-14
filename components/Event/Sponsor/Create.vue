@@ -28,6 +28,7 @@ import type { UploadUserFile } from "element-plus";
 const props = defineProps<{ visible: boolean; editId?: any }>();
 const emits = defineEmits(["closed", "saved"]);
 const isVisible = ref(props.visible);
+const globalLoading = loadingStore();
 const fileList = ref<UploadUserFile[]>([]);
 
 watch(
@@ -36,10 +37,17 @@ watch(
         isVisible.value = val;
 
         if (props.editId && val) {
+            globalLoading.value = true;
             const { data, error } = await getOneSponsor(props.editId);
+            globalLoading.value = false;
+
             if (!error.value && data.value) {
                 const { name, logo, description } = data.value.data;
-                if (logo) fileList.value[0] = { name, url: logo };
+                if (logo) {
+                    fileList.value[0] = { name, url: logo };
+                    form.logo = logo;
+                }
+                console.log(fileList.value);
                 form.name = name;
                 form.description = description;
             }
@@ -68,7 +76,6 @@ function closeModal() {
 
 function fileChange(file: any) {
     form.logo = file;
-    console.log(form.logo);
 }
 
 async function doSaveSponsor() {

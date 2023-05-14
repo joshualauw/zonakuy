@@ -40,6 +40,7 @@ definePageMeta({
 });
 
 const { getAllBudget, deleteBudget } = budgetController();
+const globalLoading = loadingStore();
 const route = useRoute();
 
 const modalVisible = ref(false);
@@ -64,9 +65,10 @@ function openCreateModal() {
 }
 
 async function doDeleteBudget() {
+    globalLoading.value = true;
     const { error } = await deleteBudget(budgetId.value);
+    globalLoading.value = false;
     if (!error.value) {
-        deleteModalVisible.value = false;
         refresh();
     }
 }
