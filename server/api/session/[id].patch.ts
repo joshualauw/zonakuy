@@ -4,16 +4,13 @@ import { H3Event } from "h3";
 import prisma from "~/server/utils/prismaClient";
 import { uploadSpeakerAvatar } from "~/server/service/fileUploadService";
 
-export const saveSpeakerSchema = yup
-    .array(
-        yup.object({
-            avatar: yup.string().required(),
-            name: yup.string().required(),
-            role: yup.string().required(),
-        })
-    )
-    .min(1)
-    .required();
+const speakerSchema = yup.object({
+    avatar: yup.string().required(),
+    name: yup.string().required(),
+    role: yup.string().required(),
+});
+
+export const saveSpeakerSchema = yup.array(speakerSchema).min(1).required();
 
 async function saveSpeaker(event: H3Event) {
     const stream = await handleFileStream(event.node.req);

@@ -1,8 +1,8 @@
 import { CreateEventResponse, CreateEventSchema } from "~/server/api/event/index.post";
 import { GetAllEventQuery, GetAllEventResponse } from "./../../server/api/event/index.get";
 import fetcher from "~/utils/fetcher";
-import { GetOneEventResponse } from "~/server/api/event/[slug]/index.get";
-import { UpdateEventSchema } from "~/server/api/event/[slug]/index.put";
+import { GetOneEventResponse } from "~/server/api/event/[id]/index.get";
+import { UpdateEventSchema } from "~/server/api/event/[id]/index.put";
 
 export default function () {
     const errors = ref<ValidationError[]>([]);
@@ -24,10 +24,10 @@ export default function () {
             return res;
         },
 
-        async getOneEvent(slug: string) {
+        async getOneEvent(id: string) {
             loading.value = true;
             const res = await useApi<GetOneEventResponse>({
-                url: `/api/event/${slug}`,
+                url: `/api/event/${id}`,
                 method: "GET",
             });
             loading.value = false;

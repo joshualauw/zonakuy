@@ -3,7 +3,7 @@ import prisma from "~/server/utils/prismaClient";
 
 export interface GetAllBudgetQuery {
     category?: string;
-    slug?: string;
+    id?: string;
 }
 //get all budget
 async function getAllBudget(event: H3Event) {
@@ -11,8 +11,8 @@ async function getAllBudget(event: H3Event) {
     const parameter = {};
 
     if (query.category) Object.assign(parameter, { category: query.category });
-    if (query.slug) {
-        const eventExist = await prisma.event.findFirst({ where: { slug: query.slug } });
+    if (query.id) {
+        const eventExist = await prisma.event.findFirst({ where: { id: query.id } });
         if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
         Object.assign(parameter, { event_id: eventExist.id });
     }

@@ -84,7 +84,7 @@ async function doSaveSponsor() {
         const { error: updateError } = await updateSponsor({ ...form }, props.editId);
         error = updateError;
     } else {
-        const { error: createError } = await createSponsor({ ...form, slug: route.params.slug as string });
+        const { error: createError } = await createSponsor({ ...form, event_id: (route.params as { id: string }).id });
         error = createError;
     }
 

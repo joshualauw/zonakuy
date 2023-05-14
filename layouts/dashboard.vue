@@ -67,59 +67,56 @@ const iconSwap = ref(false);
 
 const { getOneEvent } = eventController();
 
-const route = useRoute();
-
-const { error } = await getOneEvent(route.params.slug as string);
+const currentPath = computed(() => router.currentRoute.value.params as { id: string });
+const { error } = await getOneEvent(currentPath.value.id);
 if (error.value) {
     throw createError({ statusCode: 404, statusMessage: "Page Not Found" });
 }
-
-const currentPath = computed(() => router.currentRoute.value);
 
 const sidebarNav = [
     {
         icon: "material-symbols:bar-chart",
         name: "Overview",
-        link: `/event/${currentPath.value.params.slug}/dashboard/report`,
+        link: `/event/${currentPath.value.id}/dashboard/report`,
     },
     {
         icon: "majesticons:user-group",
         name: "Participant",
-        link: `/event/${currentPath.value.params.slug}/dashboard/participant`,
+        link: `/event/${currentPath.value.id}/dashboard/participant`,
     },
     {
         icon: "uis:schedule",
         name: "Session",
-        link: `/event/${currentPath.value.params.slug}/dashboard/session`,
+        link: `/event/${currentPath.value.id}/dashboard/session`,
     },
     {
         icon: "material-symbols:account-balance-wallet",
         name: "Budget",
-        link: `/event/${currentPath.value.params.slug}/dashboard/budget`,
+        link: `/event/${currentPath.value.id}/dashboard/budget`,
     },
     {
         icon: "mdi:hand-heart",
         name: "Sponsor",
-        link: `/event/${currentPath.value.params.slug}/dashboard/sponsor`,
+        link: `/event/${currentPath.value.id}/dashboard/sponsor`,
     },
     {
         icon: "material-symbols:edit-document-rounded",
         name: "Form Builder",
-        link: `/event/${currentPath.value.params.slug}/dashboard/form`,
+        link: `/event/${currentPath.value.id}/dashboard/form`,
     },
     {
         icon: "mdi:certificate",
         name: "Certificate Builder",
-        link: `/event/${currentPath.value.params.slug}/dashboard/certificate`,
+        link: `/event/${currentPath.value.id}/dashboard/certificate`,
     },
     {
         icon: "material-symbols:settings",
         name: "Settings",
-        link: `/event/${currentPath.value.params.slug}/dashboard/settings`,
+        link: `/event/${currentPath.value.id}/dashboard/settings`,
     },
 ];
 
-const currentPageName = ref(sidebarNav.find((n) => n.link == currentPath.value.fullPath)?.name);
+const currentPageName = ref(sidebarNav.find((n) => n.link == router.currentRoute.value.fullPath)?.name);
 
 function goToMenuPage(nav: (typeof sidebarNav)[0]) {
     currentPageName.value = nav.name;

@@ -4,7 +4,7 @@ import { H3Event } from "h3";
 import prisma from "~/server/utils/prismaClient";
 
 export const createSessionSchema = yup.object({
-    slug: yup.string().required(),
+    event_id: yup.string().required(),
     title: yup.string().required(),
     description: yup.string().required(),
     day: yup.date().required(),
@@ -14,16 +14,15 @@ export const createSessionSchema = yup.object({
 async function createSession(event: H3Event) {
     const body = await schemaValidator<CreateSessionSchema>(createSessionSchema, await readBody(event));
 
-    const eventExist = await prisma.event.findFirst({ where: { slug: body.slug } });
+    const eventExist = await prisma.event.findFirst({ where: { id: body.event_id } });
     if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
 
     const session = await prisma.session.create({
         data: {
-            event_id: eventExist.id,
             start_time: body.time[0],
             end_time: body.time[1],
             speaker: [],
-            ...exclude(body, ["slug", "time"]),
+            ...exclude(body, ["time"]),
         },
     });
 

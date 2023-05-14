@@ -34,6 +34,7 @@
         "handlebars": "^4.7.7",
         "jsonwebtoken": "^9.0.0",
         "lodash": "^4.17.21",
+        "nuxt-typed-router": "^3.2.2",
         "slugify": "^1.6.6",
         "yup": "^1.1.1"
     }

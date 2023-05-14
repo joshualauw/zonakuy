@@ -15,23 +15,20 @@ export const updateEventSchema = yup.object({
 });
 
 async function updateEvent(event: H3Event) {
-    const params = event.context.params as { slug: string };
+    const params = event.context.params as { id: string };
 
     const body = await schemaValidator<UpdateEventSchema>(updateEventSchema, await readBody(event));
     const user = event.context.auth as Omit<User, "password">;
 
-    const eventExist = await prisma.event.findFirst({ where: { slug: params.slug } });
+    const eventExist = await prisma.event.findFirst({ where: { id: params.id } });
     if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
 
     const _event = await prisma.event.update({
-        where: {
-            id: eventExist.id,
-        },
+        where: { id: eventExist.id },
         data: {
             start_date: body.date_range[0],
             end_date: body.date_range[1],
             user_id: user.id,
-            slug: slugify(body.name),
             price: 0,
             ...exclude(body, ["date_range"]),
         },
