@@ -3,7 +3,7 @@
         <ElDialog v-model="isVisible" @close="closeModal" title="Create Sponsor" width="40%" class="rounded-md">
             <ElForm label-position="top">
                 <ElFormItem label="Logo" :error="error.logo">
-                    <UploadSingle :file-list="fileList" @file-changed="fileChange" @file-removed="form.logo = ''" />
+                    <UploadSingle :file-url="form.logo" @file-changed="fileChange" />
                 </ElFormItem>
                 <ElFormItem label="Sponsor Name" :error="error.name">
                     <ElInput v-model="form.name" type="text" size="large" />
@@ -27,9 +27,12 @@ import type { UploadUserFile } from "element-plus";
 
 const props = defineProps<{ visible: boolean; editId?: any }>();
 const emits = defineEmits(["closed", "saved"]);
+
+const { createSponsor, getOneSponsor, updateSponsor, errors, loading } = sponsorController();
 const isVisible = ref(props.visible);
+const sponsorFile = ref<UploadUserFile | null>(null);
 const globalLoading = loadingStore();
-const fileList = ref<UploadUserFile[]>([]);
+const route = useRoute();
 
 watch(
     () => props.visible,
@@ -43,23 +46,15 @@ watch(
 
             if (!error.value && data.value) {
                 const { name, logo, description } = data.value.data;
-                if (logo) {
-                    fileList.value[0] = { name, url: logo };
-                    form.logo = logo;
-                }
-                console.log(fileList.value);
+                if (logo) form.logo = logo;
                 form.name = name;
                 form.description = description;
             }
         } else {
             form.reset();
-            fileList.value = [];
         }
     }
 );
-
-const { createSponsor, getOneSponsor, updateSponsor, errors, loading } = sponsorController();
-const route = useRoute();
 
 const form = useForm({
     name: "",
@@ -74,17 +69,22 @@ function closeModal() {
     emits("closed");
 }
 
-function fileChange(file: any) {
-    form.logo = file;
+function fileChange(file: UploadUserFile | null) {
+    sponsorFile.value = file;
+    console.log(sponsorFile.value);
 }
 
 async function doSaveSponsor() {
     let error: globalThis.Ref<Error | null>;
     if (props.editId) {
-        const { error: updateError } = await updateSponsor({ ...form }, props.editId);
+        const { error: updateError } = await updateSponsor({ ...form, logo: sponsorFile.value }, props.editId);
         error = updateError;
     } else {
-        const { error: createError } = await createSponsor({ ...form, event_id: (route.params as { id: string }).id });
+        const { error: createError } = await createSponsor({
+            ...form,
+            logo: sponsorFile.value,
+            event_id: (route.params as { id: string }).id,
+        });
         error = createError;
     }
 

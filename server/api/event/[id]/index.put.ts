@@ -1,6 +1,5 @@
 //update zona
 import yup from "yup";
-import slugify from "slugify";
 import prisma from "~/server/utils/prismaClient";
 import { H3Event } from "h3";
 import { exclude } from "~/server/utils/helpers";

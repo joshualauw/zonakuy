@@ -1,7 +1,7 @@
-import { UpdateSponsorResponse, UpdateSponsorSchema } from "~/server/api/sponsor/[id].put";
+import { UpdateSponsorPayload, UpdateSponsorResponse } from "~/server/api/sponsor/[id].put";
 import { GetOneSponsorResponse } from "./../../server/api/sponsor/[id].get";
 import { GetAllSponsorQuery, GetAllSponsorResponse } from "~/server/api/sponsor/index.get";
-import { CreateSponsorResponse, CreateSponsorSchema } from "~/server/api/sponsor/index.post";
+import { CreateSponsorPayload, CreateSponsorResponse } from "~/server/api/sponsor/index.post";
 import { DeleteSponsorResponse } from "~/server/api/sponsor/[id].delete";
 
 export default function () {
@@ -28,11 +28,11 @@ export default function () {
             return res;
         },
 
-        async updateSponsor(payload: UpdateSponsorSchema, editId: string) {
+        async updateSponsor(payload: UpdateSponsorPayload, editId: string) {
             const form = new FormData();
-            form.append("logo", payload.logo);
-            form.append("name", payload.name);
-            form.append("description", payload.description);
+            form.append("logo", (payload.logo as Blob) ?? "");
+            form.append("name", payload.name ?? "");
+            form.append("description", payload.description ?? "");
 
             loading.value = true;
             const res = await useApi<UpdateSponsorResponse>({
@@ -46,12 +46,12 @@ export default function () {
             return res;
         },
 
-        async createSponsor(payload: CreateSponsorSchema) {
+        async createSponsor(payload: CreateSponsorPayload) {
             const form = new FormData();
-            form.append("logo", payload.logo);
-            form.append("name", payload.name);
-            form.append("description", payload.description);
-            form.append("event_id", payload.event_id);
+            form.append("logo", (payload.logo as Blob) ?? "");
+            form.append("name", payload.name ?? "");
+            form.append("description", payload.description ?? "");
+            form.append("event_id", payload.event_id ?? "");
 
             loading.value = true;
             const res = await useApi<CreateSponsorResponse>({ url: "/api/sponsor", method: "POST", body: form });

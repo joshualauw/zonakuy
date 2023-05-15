@@ -2,7 +2,7 @@
     <div class="p-8">
         <el-breadcrumb separator="/">
             <el-breadcrumb-item>
-                <NuxtLink :to="`/event/${$route.params.slug}/dashboard/form`">form manage</NuxtLink>
+                <NuxtLink :to="`/event/${$route.params.id}/dashboard/form`">form manage</NuxtLink>
             </el-breadcrumb-item>
             <el-breadcrumb-item>form detail</el-breadcrumb-item>
         </el-breadcrumb>

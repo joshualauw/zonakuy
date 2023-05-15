@@ -13,6 +13,7 @@ v2.config({
 export async function fileUpload(filePath: string, fileId: string) {
     return await v2.uploader.upload(filePath, {
         public_id: fileId,
+        allowed_formats: ["png", "jpg", "gif", "svg"],
     });
 }
 
@@ -20,7 +21,7 @@ export async function fileDelete(filePath: string) {
     return await v2.uploader.destroy(filePath);
 }
 
-export async function handleFileStream(req: NodeIncomingMessage): Promise<any> {
+export async function readFormData(req: NodeIncomingMessage): Promise<any> {
     return new Promise((resolve, reject) => {
         const form = formidable({ multiples: true });
         form.parse(req, (error, fields, files) => {

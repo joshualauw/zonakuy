@@ -2,59 +2,41 @@
     <div class="flex w-full space-x-10">
         <ElForm label-position="top" class="w-1/2">
             <div class="grid grid-cols-2 gap-x-4">
-                <ElFormItem label="Country">
-                    <ElInput
-                        v-model="form.country"
-                        type="text"
-                        size="large"
-                        :class="{ 'border border-red-500': error.country }"
-                    />
-                    <p v-if="error.country" class="mt-0.5 text-xs text-red-500">{{ error.country }}</p>
+                <ElFormItem label="Country" :error="error.country">
+                    <ElInput v-model="form.country" type="text" size="large" />
                 </ElFormItem>
-                <ElFormItem label="City">
-                    <ElInput
-                        v-model="form.city"
-                        type="text"
-                        size="large"
-                        :class="{ 'border border-red-500': error.city }"
-                    />
-                    <p v-if="error.city" class="mt-0.5 text-xs text-red-500">{{ error.city }}</p>
+                <ElFormItem label="City" :error="error.city">
+                    <ElInput v-model="form.city" type="text" size="large" />
                 </ElFormItem>
             </div>
             <div class="grid grid-cols-2 gap-x-4">
-                <ElFormItem label="Street">
-                    <ElInput
-                        v-model="form.street"
-                        type="text"
-                        size="large"
-                        :class="{ 'border border-red-500': error.street }"
-                    />
-                    <p v-if="error.street" class="mt-0.5 text-xs text-red-500">{{ error.street }}</p>
+                <ElFormItem label="Street" :error="error.street">
+                    <ElInput v-model="form.street" type="text" size="large" />
                 </ElFormItem>
-                <ElFormItem label="Postal Code">
-                    <ElInput
-                        v-model="form.postal_code"
-                        type="text"
-                        size="large"
-                        :class="{ 'border border-red-500': error.postal_code }"
-                    />
-                    <p v-if="error.postal_code" class="mt-0.5 text-xs text-red-500">{{ error.postal_code }}</p>
+                <ElFormItem label="Postal Code" :error="error.postal_code">
+                    <ElInput v-model="form.postal_code" type="text" size="large" />
                 </ElFormItem>
             </div>
-            <ElFormItem label="Venue">
-                <ElInput
-                    v-model="form.venue"
-                    type="text"
-                    size="large"
-                    :class="{ 'border border-red-500': error.venue }"
-                />
-                <p v-if="error.venue" class="mt-0.5 text-xs text-red-500">{{ error.venue }}</p>
+            <ElFormItem label="Venue" :error="error.venue">
+                <ElInput v-model="form.venue" type="text" size="large" />
             </ElFormItem>
             <ElFormItem label="Suggestions">
-                <ElAutocomplete size="large" class="w-full"></ElAutocomplete>
+                <ElSelect
+                    @change="selectLocation"
+                    v-model="selectedLocation"
+                    size="large"
+                    placeholder="Select Location"
+                    class="w-full"
+                >
+                    <ElOption
+                        v-for="suggest in suggestions"
+                        :value="suggest.coordinate"
+                        :label="suggest.name"
+                    ></ElOption>
+                </ElSelect>
             </ElFormItem>
             <div class="space-x-3 float-right">
-                <ElButton type="primary" size="large">
+                <ElButton @click="searchInMaps" type="primary" size="large">
                     <Icon name="material-symbols:search" class="w-5 h-5 mr-2"></Icon>Search in maps
                 </ElButton>
                 <ElButton type="success" size="large">Save</ElButton>
@@ -65,24 +47,24 @@
                 <Icon name="material-symbols:warning" class="w-12 h-12"></Icon>
                 <p class="t">Map not found</p>
             </div>
-            <ElForm label-position="top" class="grid grid-cols-2 gap-x-4">
-                <ElFormItem label="Latitude">
-                    <ElInput
+            <ElForm label-position="top" class="grid grid-cols-2 w-full gap-x-4" style="width: 100%">
+                <ElFormItem label="Latitude" :error="error.coordinate">
+                    <ElInputNumber
                         v-model="form.latitude"
+                        :controls="false"
                         type="text"
                         size="large"
-                        :class="{ 'border border-red-500': error.latitude }"
+                        style="width: 100%"
                     />
-                    <p v-if="error.latitude" class="mt-0.5 text-xs text-red-500">{{ error.latitude }}</p>
                 </ElFormItem>
                 <ElFormItem label="Longitude">
-                    <ElInput
+                    <ElInputNumber
                         v-model="form.longitude"
+                        :controls="false"
                         type="text"
                         size="large"
-                        :class="{ 'border border-red-500': error.longitude }"
+                        style="width: 100%"
                     />
-                    <p v-if="error.longitude" class="mt-0.5 text-xs text-red-500">{{ error.longitude }}</p>
                 </ElFormItem>
             </ElForm>
         </div>
@@ -90,6 +72,10 @@
 </template>
 
 <script setup lang="ts">
+const suggestions = ref<{ name: string; coordinate: [number, number] }[]>([]);
+const globalLoading = loadingStore();
+const selectedLocation = ref<[number, number]>([0, 0]);
+
 const form = useForm({
     country: "",
     city: "",
@@ -100,5 +86,42 @@ const form = useForm({
     longitude: 0,
 });
 
-const error = { ...form };
+const error = { ...form, coordinate: "" };
+
+function selectLocation(val: [number, number]) {
+    selectedLocation.value = val;
+    form.latitude = val[0];
+    form.longitude = val[1];
+}
+
+watch(
+    () => [form.latitude, form.longitude],
+    useDebounce((val) => {
+        console.log(val);
+        plotMap();
+    }, 2000)
+);
+
+function plotMap() {
+    if (form.latitude !== 0 && form.longitude !== 0) {
+        console.log("map plotted at " + form.latitude + ", " + form.longitude);
+    }
+}
+
+async function searchInMaps() {
+    globalLoading.value = true;
+    setTimeout(() => {
+        globalLoading.value = false;
+        suggestions.value = [
+            {
+                name: "Gereja Santo Yakobus",
+                coordinate: [-7.2925603309408995, 112.65493455452086],
+            },
+            {
+                name: "Puri Lidah Kulon Indah",
+                coordinate: [-7.30137186124929, 112.6527887873985],
+            },
+        ];
+    }, 1000);
+}
 </script>

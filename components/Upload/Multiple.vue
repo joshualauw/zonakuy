@@ -1,7 +1,6 @@
 <template>
     <ElUpload
-        v-model:file-list="fileList"
-        :on-change="handleFileChanged"
+        v-model:file-list="_fileList"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
@@ -15,23 +14,33 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import type { UploadProps, UploadUserFile, UploadFile } from "element-plus";
+import type { UploadProps, UploadUserFile } from "element-plus";
 
+const props = defineProps<{ fileList: UploadUserFile[] }>();
 const emits = defineEmits(["file-changed"]);
-const fileList = ref<UploadUserFile[]>([]);
+const _fileList = ref<UploadUserFile[]>([]);
 
 const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 
-const handleFileChanged = (file: UploadFile) => {
-    emits(
-        "file-changed",
-        fileList.value.map((f) => f.raw)
-    );
-};
+watch(
+    () => props.fileList,
+    (val) => {
+        _fileList.value = val && val.length > 0 ? [...val] : [];
+    },
+    { deep: true }
+);
+
+watch(_fileList, async (val) => {
+    const files = [];
+    for (let i = 0; i < val.length; i++) {
+        files.push(await getFileFromUrl(val[i].url!, val[i].name));
+    }
+    emits("file-changed", files);
+});
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
-    console.log(uploadFile, uploadFiles);
+    _fileList.value = _fileList.value.filter((f) => f.uid !== uploadFile.uid);
 };
 
 const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {

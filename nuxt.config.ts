@@ -24,8 +24,19 @@ export default defineNuxtConfig({
         dirs: ["composables", "composables/*/index.{ts,js,mjs,mts}", "composables/**"],
     },
 
-    modules: ["@nuxtjs/tailwindcss", "@element-plus/nuxt", "nuxt-icon", "@nuxt/image-edge", "nuxt-typed-router"],
-    image: { domains: ["localhost", "netlify"], provider: "ipx" },
+    modules: [
+        "@nuxtjs/tailwindcss",
+        "@element-plus/nuxt",
+        "nuxt-icon",
+        "@nuxt/image-edge",
+        "nuxt-typed-router",
+        "nuxt-lodash",
+    ],
+    image: {
+        domains: ["localhost", "netlify"],
+        provider: "ipx",
+        cloudinary: { baseURL: "https://res.cloudinary.com/joshualauw/image/upload/v1683794370" },
+    },
 
     alias: {
         public: "/<rootDir>/public/_ipx",

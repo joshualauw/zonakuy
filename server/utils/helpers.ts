@@ -1,8 +1,9 @@
 export function exclude<T, Key extends keyof T>(obj: T, keys: Key[]): Omit<T, Key> {
+    const newObj = { ...obj };
     for (const key of keys) {
-        delete obj[key];
+        delete newObj[key];
     }
-    return obj;
+    return newObj;
 }
 
 export function generateRandomToken(length: number = 6) {

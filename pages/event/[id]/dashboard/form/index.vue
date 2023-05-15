@@ -5,7 +5,7 @@
                 <EventFormItem v-for="i in 5">
                     <template #action>
                         <div>
-                            <ElButton @click="navigateTo(`/event/${$route.params.slug}/dashboard/form/${i}`)"
+                            <ElButton @click="navigateTo(`/event/${$route.params.id}/dashboard/form/${i}`)"
                                 >Detail</ElButton
                             >
                             <ElButton @click="deleteModalVisible = true" type="danger"> Delete </ElButton>
@@ -23,7 +23,7 @@
             <div class="card rounded-md h-[225px]">
                 <h3 class="font-semibold mb-4">Actions</h3>
                 <div class="grid grid-cols-1 gap-4">
-                    <button @click="navigateTo(`/event/${$route.params.slug}/dashboard/form/1`)" class="action-button">
+                    <button @click="navigateTo(`/event/${$route.params.id}/dashboard/form/1`)" class="action-button">
                         <Icon name="material-symbols:edit-document-rounded" class="w-6 h-6 mb-1"></Icon> Create Form
                     </button>
                 </div>

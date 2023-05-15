@@ -2,9 +2,9 @@
     <ElUpload
         ref="upload"
         :limit="1"
-        v-model:file-list="_fileList"
+        v-model:file-list="fileList"
         :on-exceed="handleExceed"
-        :on-remove="handleFileRemoved"
+        :on-remove="handleRemove"
         list-type="picture"
         :auto-upload="false"
     >
@@ -19,33 +19,38 @@ import { ref } from "vue";
 import { genFileId } from "element-plus";
 import type { UploadInstance, UploadProps, UploadRawFile, UploadUserFile } from "element-plus";
 
-const props = defineProps<{ fileList: UploadUserFile[] }>();
+const props = defineProps<{ fileUrl?: string }>();
 const emits = defineEmits(["file-changed", "file-removed"]);
 const upload = ref<UploadInstance>();
-const _fileList = ref<UploadUserFile[]>([]);
+const fileList = ref<UploadUserFile[]>([]);
 
 watch(
-    () => props.fileList,
+    () => props.fileUrl,
     (val) => {
-        _fileList.value = val && val.length > 0 ? [...val] : [];
-    },
-    { deep: true }
+        if (val) {
+            fileList.value = [{ name: getFileNameFromUrl(val), url: val }];
+        } else {
+            fileList.value = [];
+        }
+    }
 );
 
-watch(_fileList, async (val) => {
+watch(fileList, async (val) => {
     if (val.length > 0) {
         emits("file-changed", await getFileFromUrl(val[0].url!, val[0].name));
+    } else {
+        emits("file-changed", null);
     }
 });
+
+const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
+    fileList.value = fileList.value.filter((f) => f.uid !== uploadFile.uid);
+};
 
 const handleExceed: UploadProps["onExceed"] = (files) => {
     upload.value!.clearFiles();
     const file = files[0] as UploadRawFile;
     file.uid = genFileId();
     upload.value!.handleStart(file);
-};
-
-const handleFileRemoved = () => {
-    emits("file-removed");
 };
 </script>
