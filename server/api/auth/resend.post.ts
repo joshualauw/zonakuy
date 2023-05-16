@@ -7,7 +7,7 @@ import redis from "~/server/utils/redis";
 
 export type TokenVerifyContext = "account-activation" | "forgot-password";
 
-export const resendTokenSchema = yup.object({
+const resendTokenSchema = yup.object({
     email: yup.string().email().required(),
     context: yup.string().oneOf(["account-activation", "forgot-password"]),
 });
@@ -41,7 +41,6 @@ async function resendToken(event: H3Event) {
     return { data: null, message };
 }
 
-export type EmailResendResponse = UnwrapPromise<ReturnType<typeof resendToken>>;
 export type ResendTokenSchema = yup.InferType<typeof resendTokenSchema>;
 export type ResendTokenResponse = UnwrapPromise<ReturnType<typeof resendToken>>;
 

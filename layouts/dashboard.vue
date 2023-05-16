@@ -59,19 +59,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
 const isCollapse = ref(true);
 const router = useRouter();
 const user = authStore();
 const iconSwap = ref(false);
 
-const { getOneEvent } = eventController();
-
 const currentPath = computed(() => router.currentRoute.value.params as { id: string });
-const { error } = await getOneEvent(currentPath.value.id);
-if (error.value) {
-    throw createError({ statusCode: 404, statusMessage: "Page Not Found" });
-}
 
 const sidebarNav = [
     {

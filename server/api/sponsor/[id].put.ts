@@ -5,7 +5,7 @@ import prisma from "~/server/utils/prismaClient";
 import { uploadSponsorLogo } from "~/server/service/fileUploadService";
 import { readFormData } from "~/server/utils/uploadFile";
 
-const schema = yup.object({
+const updateSponsorSchema = yup.object({
     logo: yup
         .mixed()
         .transform((value) => (value === "" ? null : value))
@@ -14,8 +14,8 @@ const schema = yup.object({
     description: yup.string().required(),
 });
 
-async function handler(event: H3Event) {
-    const body = await schemaValidator<UpdateSponsorSchema>(schema, await readFormData(event.node.req));
+async function updateSponsor(event: H3Event) {
+    const body = await schemaValidator<UpdateSponsorSchema>(updateSponsorSchema, await readFormData(event.node.req));
     const params = event.context.params as { id: string };
 
     const sponsorExist = await prisma.sponsor.findFirst({ where: { id: params.id } });
@@ -31,8 +31,7 @@ async function handler(event: H3Event) {
     return { data: sponsor, message: "sponsor updated successfully" };
 }
 
-type UpdateSponsorSchema = yup.InferType<typeof schema>;
-export type UpdateSponsorPayload = Nullable<UpdateSponsorSchema>;
-export type UpdateSponsorResponse = UnwrapPromise<ReturnType<typeof handler>>;
+export type UpdateSponsorSchema = yup.InferType<typeof updateSponsorSchema>;
+export type UpdateSponsorResponse = UnwrapPromise<ReturnType<typeof updateSponsor>>;
 
-export default defineEventHandler(handler);
+export default defineEventHandler(updateSponsor);

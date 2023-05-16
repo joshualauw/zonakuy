@@ -8,7 +8,7 @@ import { sendEmailTokenLink, setEmailOptions } from "~/server/service/emailServi
 import { H3Event } from "h3";
 import redis from "~/server/utils/redis";
 
-export const registerSchema = yup.object({
+const registerSchema = yup.object({
     username: yup
         .string()
         .required()

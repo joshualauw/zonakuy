@@ -39,16 +39,20 @@
                 <ElButton @click="searchInMaps" type="primary" size="large">
                     <Icon name="material-symbols:search" class="w-5 h-5 mr-2"></Icon>Search in maps
                 </ElButton>
-                <ElButton type="success" size="large">Save</ElButton>
+                <ElButton @click="doUpdateEventLocation" type="success" size="large" :loading="loading">Save</ElButton>
             </div>
         </ElForm>
         <div class="w-1/2 flex flex-col space-y-5">
-            <div class="border box flex-col bg-slate-100 mt-4 h-72 text-center text-gray-500 text-lg font-semibold">
+            <Leaflet
+                :latitude="form.latitude"
+                :longitude="form.longitude"
+                class="border box flex-col bg-slate-100 mt-4 h-72 text-center text-gray-500 text-lg font-semibold"
+            >
                 <Icon name="material-symbols:warning" class="w-12 h-12"></Icon>
                 <p class="t">Map not found</p>
-            </div>
+            </Leaflet>
             <ElForm label-position="top" class="grid grid-cols-2 w-full gap-x-4" style="width: 100%">
-                <ElFormItem label="Latitude" :error="error.coordinate">
+                <ElFormItem label="Latitude" :error="error.latitude">
                     <ElInputNumber
                         v-model="form.latitude"
                         :controls="false"
@@ -57,7 +61,7 @@
                         style="width: 100%"
                     />
                 </ElFormItem>
-                <ElFormItem label="Longitude">
+                <ElFormItem label="Longitude" :error="error.longitude">
                     <ElInputNumber
                         v-model="form.longitude"
                         :controls="false"
@@ -72,9 +76,15 @@
 </template>
 
 <script setup lang="ts">
+import { Event } from "@prisma/client";
+
+const props = defineProps<{ event?: Event }>();
+
 const suggestions = ref<{ name: string; coordinate: [number, number] }[]>([]);
 const globalLoading = loadingStore();
 const selectedLocation = ref<[number, number]>([0, 0]);
+
+const { updateEventLocation, errors, loading } = eventController();
 
 const form = useForm({
     country: "",
@@ -86,7 +96,18 @@ const form = useForm({
     longitude: 0,
 });
 
-const error = { ...form, coordinate: "" };
+const error = computed(() => generateErrors(errors.value));
+
+if (props.event && props.event.location) {
+    const { country, city, street, venue, postal_code, latitude, longitude } = props.event.location;
+    form.country = country;
+    form.city = city;
+    form.street = street;
+    form.venue = venue;
+    form.postal_code = postal_code;
+    form.latitude = latitude;
+    form.longitude = longitude;
+}
 
 function selectLocation(val: [number, number]) {
     selectedLocation.value = val;
@@ -94,34 +115,27 @@ function selectLocation(val: [number, number]) {
     form.longitude = val[1];
 }
 
-watch(
-    () => [form.latitude, form.longitude],
-    useDebounce((val) => {
-        console.log(val);
-        plotMap();
-    }, 2000)
-);
-
-function plotMap() {
-    if (form.latitude !== 0 && form.longitude !== 0) {
-        console.log("map plotted at " + form.latitude + ", " + form.longitude);
-    }
-}
-
 async function searchInMaps() {
     globalLoading.value = true;
-    setTimeout(() => {
-        globalLoading.value = false;
-        suggestions.value = [
-            {
-                name: "Gereja Santo Yakobus",
-                coordinate: [-7.2925603309408995, 112.65493455452086],
-            },
-            {
-                name: "Puri Lidah Kulon Indah",
-                coordinate: [-7.30137186124929, 112.6527887873985],
-            },
-        ];
-    }, 1000);
+    const data = await $fetch<OSMResponse[]>("https://nominatim.openstreetmap.org/search", {
+        query: {
+            q: `${form.venue}, ${form.street}, ${form.city}, ${form.country}, ${form.postal_code}`,
+            format: "json",
+            limit: 20,
+        },
+    });
+    globalLoading.value = false;
+    suggestions.value = [
+        ...data.map((d) => ({
+            name: d.display_name,
+            coordinate: [Number(d.lat), Number(d.lon)] as [number, number],
+        })),
+    ];
+}
+
+async function doUpdateEventLocation() {
+    if (props.event) {
+        await updateEventLocation({ ...form }, props.event.id);
+    }
 }
 </script>

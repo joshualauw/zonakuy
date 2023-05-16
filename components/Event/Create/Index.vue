@@ -61,12 +61,11 @@
 </template>
 
 <script setup lang="ts">
+import { Event } from "@prisma/client";
 import { ElInput } from "element-plus";
-const { createEvent, updateEvent, getOneEvent, errors, loading } = eventController();
+const { createEvent, updateEvent, errors, loading } = eventController();
 
-const props = defineProps<{ editId?: any }>();
-const emits = defineEmits(["saved"]);
-
+const props = defineProps<{ event?: Event }>();
 const newTag = ref("");
 const inputVisible = ref(false);
 const InputRef = ref<InstanceType<typeof ElInput>>();
@@ -79,16 +78,13 @@ const form = useForm({
     tags: [] as string[],
 });
 
-if (props.editId) {
-    const { data: event, error } = await getOneEvent(props.editId);
-    if (!error.value && event.value) {
-        const { name, description, limit, start_date, end_date, tags } = event.value.data;
-        form.name = name;
-        form.description = description;
-        form.limit = limit;
-        form.date_range = [start_date, end_date];
-        form.tags = tags;
-    }
+if (props.event) {
+    const { name, description, limit, start_date, end_date, tags } = props.event;
+    form.name = name;
+    form.description = description;
+    form.limit = limit;
+    form.date_range = [start_date, end_date];
+    form.tags = tags;
 }
 
 const error = computed(() => generateErrors(errors.value));
@@ -111,21 +107,10 @@ function createTag() {
 }
 
 async function doSaveEvent() {
-    let error: globalThis.Ref<Error | null>;
-    let data;
-
-    if (props.editId) {
-        const { error: updateError, data: updateData } = await updateEvent({ ...form }, props.editId);
-        error = updateError;
-        data = updateData;
+    if (props.event) {
+        await updateEvent({ ...form }, props.event.id);
     } else {
-        const { error: createError, data: createData } = await createEvent({ ...form });
-        error = createError;
-        data = createData;
-    }
-
-    if (!error.value && data.value) {
-        emits("saved", data.value.data.id);
+        await createEvent({ ...form });
     }
 }
 </script>

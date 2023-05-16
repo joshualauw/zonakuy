@@ -5,7 +5,7 @@ import { H3Event } from "h3";
 import { exclude } from "~/server/utils/helpers";
 import { User } from "@prisma/client";
 
-export const createEventSchema = yup.object({
+const createEventSchema = yup.object({
     name: yup.string().required(),
     description: yup.string().required(),
     limit: yup.number().required().min(1),

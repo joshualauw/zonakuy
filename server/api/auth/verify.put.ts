@@ -4,7 +4,7 @@ import prisma from "~/server/utils/prismaClient";
 import { H3Event } from "h3";
 import { verifyToken } from "~/server/service/cacheService";
 
-export const verifyEmailSchema = yup.object({
+const verifyEmailSchema = yup.object({
     email: yup.string().email().required(),
     token: yup.string().required(),
 });

@@ -24,16 +24,13 @@ const emits = defineEmits(["file-changed", "file-removed"]);
 const upload = ref<UploadInstance>();
 const fileList = ref<UploadUserFile[]>([]);
 
-watch(
-    () => props.fileUrl,
-    (val) => {
-        if (val) {
-            fileList.value = [{ name: getFileNameFromUrl(val), url: val }];
-        } else {
-            fileList.value = [];
-        }
+watchEffect(() => {
+    if (props.fileUrl) {
+        fileList.value = [{ name: getFileNameFromUrl(props.fileUrl), url: props.fileUrl }];
+    } else {
+        fileList.value = [];
     }
-);
+});
 
 watch(fileList, async (val) => {
     if (val.length > 0) {

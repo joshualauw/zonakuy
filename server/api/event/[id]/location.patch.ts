@@ -1,10 +1,10 @@
 import yup from "yup";
 import prisma from "~/server/utils/prismaClient";
 import { H3Event } from "h3";
-import { exclude } from "~/server/utils/helpers";
 
-export const updateEventLocationSchema = yup.object({
-    coordinate: yup.array(yup.number().required()).min(2).required(),
+const updateEventLocationSchema = yup.object({
+    latitude: yup.number().required(),
+    longitude: yup.number().required(),
     country: yup.string().required(),
     city: yup.string().required(),
     street: yup.string().required(),
@@ -23,11 +23,7 @@ async function updateEventLocation(event: H3Event) {
     const _event = await prisma.event.update({
         where: { id: eventExist.id },
         data: {
-            location: {
-                latitude: body.coordinate[0],
-                longitude: body.coordinate[1],
-                ...exclude(body, ["coordinate"]),
-            },
+            location: body,
         },
     });
 

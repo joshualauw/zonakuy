@@ -77,12 +77,12 @@ function fileChange(file: UploadUserFile | null) {
 async function doSaveSponsor() {
     let error: globalThis.Ref<Error | null>;
     if (props.editId) {
-        const { error: updateError } = await updateSponsor({ ...form, logo: sponsorFile.value }, props.editId);
+        const { error: updateError } = await updateSponsor({ ...form, logo: sponsorFile.value as any }, props.editId);
         error = updateError;
     } else {
         const { error: createError } = await createSponsor({
             ...form,
-            logo: sponsorFile.value,
+            logo: sponsorFile.value as any,
             event_id: (route.params as { id: string }).id,
         });
         error = createError;

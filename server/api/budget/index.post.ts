@@ -8,7 +8,7 @@ const expenseSchema = yup.object({
     amount: yup.number().min(0).required(),
 });
 
-export const createBudgetSchema = yup.object({
+const createBudgetSchema = yup.object({
     event_id: yup.string().required(),
     name: yup.string().required(),
     limit: yup.number().min(0).required(),

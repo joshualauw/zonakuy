@@ -5,7 +5,7 @@ import prisma from "~/server/utils/prismaClient";
 import { readFormData } from "~/server/utils/uploadFile";
 import { uploadSponsorLogo } from "~/server/service/fileUploadService";
 
-const schema = yup.object({
+const createSponsorSchema = yup.object({
     event_id: yup.string().required(),
     logo: yup
         .mixed()
@@ -15,8 +15,8 @@ const schema = yup.object({
     description: yup.string().required(),
 });
 
-async function handler(event: H3Event) {
-    const body = await schemaValidator<CreateSponsorSchema>(schema, await readFormData(event.node.req));
+async function createSponsor(event: H3Event) {
+    const body = await schemaValidator<CreateSponsorSchema>(createSponsorSchema, await readFormData(event.node.req));
 
     const eventExist = await prisma.event.findFirst({ where: { id: body.event_id } });
     if (!eventExist) throw createError({ statusCode: 404, message: "event not found" });
@@ -30,8 +30,7 @@ async function handler(event: H3Event) {
     return { data: sponsor, message: "sponsor created successfully" };
 }
 
-type CreateSponsorSchema = yup.InferType<typeof schema>;
-export type CreateSponsorPayload = Nullable<CreateSponsorSchema>;
-export type CreateSponsorResponse = UnwrapPromise<ReturnType<typeof handler>>;
+export type CreateSponsorSchema = yup.InferType<typeof createSponsorSchema>;
+export type CreateSponsorResponse = UnwrapPromise<ReturnType<typeof createSponsor>>;
 
-export default defineEventHandler(handler);
+export default defineEventHandler(createSponsor);

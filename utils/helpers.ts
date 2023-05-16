@@ -6,7 +6,6 @@ export function generateErrors(errors: ValidationError[]): Record<string, string
         const { path, message } = error;
         Object.assign(formattedErrors, { [path]: message });
     });
-    console.log(formattedErrors);
     return formattedErrors;
 }
 

@@ -101,5 +101,6 @@ async function doSignIn() {
             return navigateTo({ path: "/login", replace: true });
         }
     }
+    return { error, data };
 }
 </script>

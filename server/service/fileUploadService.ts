@@ -4,7 +4,6 @@ import { fileDelete, fileUpload } from "../utils/uploadFile";
 
 export async function uploadSponsorLogo(sponsor_id: string, image: any) {
     const file = image as { filepath: string };
-    console.log(file);
     const { secure_url } = await fileUpload(file.filepath, `zonakuy/sponsor/${sponsor_id}`);
     await prisma.sponsor.update({ where: { id: sponsor_id }, data: { logo: secure_url } });
 }
@@ -13,13 +12,12 @@ export async function deleteSponsorLogo(sponsor_id: string) {
     await fileDelete(`zonakuy/sponsor/${sponsor_id}`);
 }
 
-export async function uploadSpeakerAvatar(session_id: string, speakers: Speaker[], image: any[]) {
-    const files = image as { filepath: string }[];
+export async function uploadSpeakerAvatar(session_id: string, speakers: Speaker[], images: any[]) {
+    const files = images as { filepath: string }[];
     let newSpeakers: Speaker[] = [];
-    console.log(files);
 
     await fileDelete(`zonakuy/speaker/${session_id}`);
-    for (let i = 0; i < image.length; i++) {
+    for (let i = 0; i < images.length; i++) {
         const { secure_url } = await fileUpload(files[i].filepath, `zonakuy/speaker/${session_id}/${i}`);
         newSpeakers.push({
             ...speakers[i],
@@ -28,4 +26,19 @@ export async function uploadSpeakerAvatar(session_id: string, speakers: Speaker[
     }
 
     await prisma.session.update({ where: { id: session_id }, data: { speaker: newSpeakers } });
+}
+
+export async function uploadEventBannerAndGallery(event_id: string, banner: any, gallery: any[]) {
+    const file = banner as { filepath: string };
+    const { secure_url } = await fileUpload(file.filepath, `zonakuy/banner/${event_id}`);
+    const files = gallery as { filepath: string }[];
+
+    const newGallery = [];
+    await fileDelete(`zonakuy/gallery/${event_id}`);
+    for (let i in files) {
+        const { secure_url } = await fileUpload(files[i].filepath, `zonakuy/gallery/${event_id}/${i}`);
+        newGallery.push(secure_url);
+    }
+
+    return await prisma.event.update({ where: { id: event_id }, data: { banner: secure_url, gallery: newGallery } });
 }

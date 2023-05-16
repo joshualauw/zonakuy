@@ -4,7 +4,7 @@ import yup from "yup";
 import { verifyToken } from "~/server/service/cacheService";
 import prisma from "~/server/utils/prismaClient";
 
-export const resetPasswordSchema = yup.object({
+const resetPasswordSchema = yup.object({
     email: yup.string().required(),
     token: yup.string().required(),
     password: yup.string().required().min(6),

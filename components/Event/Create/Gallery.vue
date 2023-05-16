@@ -1,35 +1,59 @@
 <template>
-    <ElForm label-position="top">
-        <ElFormItem label="Event Banner">
-            <UploadSingle :file-list="banner" @file-changed="bannerChange" />
-        </ElFormItem>
-        <ElFormItem label="Event Gallery">
-            <UploadMultiple :file-list="gallery" @file-changed="galleryChange" />
-        </ElFormItem>
-        <div class="space-x-3">
-            <ElButton @click="doUploadImageEvent" type="success" size="large">Save</ElButton>
-        </div>
-    </ElForm>
+    <ClientOnly>
+        <ElForm label-position="top">
+            <ElFormItem label="Event Banner" :error="error.banner">
+                <UploadSingle :file-url="form.banner" @file-changed="bannerChange" />
+            </ElFormItem>
+            <ElFormItem label="Event Gallery" :error="error.gallery">
+                <UploadMultiple :file-urls="form.gallery" @file-changed="galleryChange" />
+            </ElFormItem>
+            <div class="space-x-3">
+                <ElButton @click="doUploadImageEvent" type="success" size="large" :loading="loading">Save</ElButton>
+            </div>
+        </ElForm>
+    </ClientOnly>
 </template>
 
 <script lang="ts" setup>
-import type { UploadUserFile } from "element-plus";
 const emits = defineEmits(["success"]);
+import type { UploadUserFile } from "element-plus";
 
-const banner = ref<UploadUserFile[]>([]);
-const gallery = ref<UploadUserFile[]>([]);
+const form = useForm({
+    banner: "",
+    gallery: [] as string[],
+});
+
+const { errors, loading, updateEventFile, getOneEvent } = eventController();
+const error = computed(() => generateErrors(errors.value));
+const route = useRoute("event-id");
+
+const bannerFile = ref<UploadUserFile | null>(null);
+const galleryFiles = ref<UploadUserFile[]>([]);
+
+onMounted(async () => {
+    const { error: getOneEventError, data } = await getOneEvent(route.params.id);
+    if (!getOneEventError.value && data.value) {
+        const { banner, gallery } = data.value.data;
+        if (banner) form.banner = banner;
+        form.gallery = [...gallery];
+    }
+});
 
 function bannerChange(file: any) {
-    banner.value = file;
+    bannerFile.value = file;
 }
 
-function galleryChange(files: any) {
-    gallery.value = [...files];
+function galleryChange(files: any[]) {
+    galleryFiles.value = [...files];
 }
 
-function doUploadImageEvent() {
-    console.log(banner.value);
-    console.log(gallery.value);
-    emits("success", true);
+async function doUploadImageEvent() {
+    const { error } = await updateEventFile(
+        { banner: bannerFile.value as any, gallery: galleryFiles.value },
+        route.params.id
+    );
+    if (!error.value) {
+        emits("success", true);
+    }
 }
 </script>

@@ -7,13 +7,15 @@ type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 
 type Modify<T, R> = Omit<T, keyof R> & R;
 
-type Nullable<T> = {
-    [P in keyof T]: T[P] | null;
-};
-
 type YupMixed<T, K extends keyof T> = {
     [P in K]: AnyPresentValue;
 } & Omit<T, K>;
+
+interface OSMResponse {
+    display_name: string;
+    lat: string;
+    lon: string;
+}
 
 interface ValidationError {
     path: string;

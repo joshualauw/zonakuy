@@ -8,7 +8,7 @@ const expenseScema = yup.object({
     amount: yup.number().required(),
 });
 
-export const updateBudgetSchema = yup.object({
+const updateBudgetSchema = yup.object({
     name: yup.string().required(),
     limit: yup.number().min(1).required(),
     category: yup.string().required(),

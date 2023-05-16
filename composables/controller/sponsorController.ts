@@ -1,7 +1,7 @@
-import { UpdateSponsorPayload, UpdateSponsorResponse } from "~/server/api/sponsor/[id].put";
+import { UpdateSponsorSchema, UpdateSponsorResponse } from "~/server/api/sponsor/[id].put";
 import { GetOneSponsorResponse } from "./../../server/api/sponsor/[id].get";
 import { GetAllSponsorQuery, GetAllSponsorResponse } from "~/server/api/sponsor/index.get";
-import { CreateSponsorPayload, CreateSponsorResponse } from "~/server/api/sponsor/index.post";
+import { CreateSponsorSchema, CreateSponsorResponse } from "~/server/api/sponsor/index.post";
 import { DeleteSponsorResponse } from "~/server/api/sponsor/[id].delete";
 
 export default function () {
@@ -28,7 +28,7 @@ export default function () {
             return res;
         },
 
-        async updateSponsor(payload: UpdateSponsorPayload, editId: string) {
+        async updateSponsor(payload: UpdateSponsorSchema, editId: string) {
             const form = new FormData();
             form.append("logo", (payload.logo as Blob) ?? "");
             form.append("name", payload.name ?? "");
@@ -46,7 +46,7 @@ export default function () {
             return res;
         },
 
-        async createSponsor(payload: CreateSponsorPayload) {
+        async createSponsor(payload: CreateSponsorSchema) {
             const form = new FormData();
             form.append("logo", (payload.logo as Blob) ?? "");
             form.append("name", payload.name ?? "");

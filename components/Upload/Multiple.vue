@@ -1,50 +1,48 @@
 <template>
     <ElUpload
-        v-model:file-list="_fileList"
-        list-type="picture-card"
-        :on-preview="handlePictureCardPreview"
+        ref="upload"
+        :limit="5"
+        v-model:file-list="fileList"
         :on-remove="handleRemove"
+        list-type="picture-card"
+        :auto-upload="false"
     >
-        <ElIcon><Icon name="fa:plus" class="w-5 h-5"></Icon></ElIcon>
+        <template #trigger>
+            <Icon name="fa:plus" size="24"></Icon>
+        </template>
     </ElUpload>
-    <ElDialog v-model="dialogVisible">
-        <NuxtImg w-full :src="dialogImageUrl" alt="Preview Image" />
-    </ElDialog>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { ref } from "vue";
-import type { UploadProps, UploadUserFile } from "element-plus";
+import type { UploadInstance, UploadProps, UploadUserFile } from "element-plus";
 
-const props = defineProps<{ fileList: UploadUserFile[] }>();
-const emits = defineEmits(["file-changed"]);
-const _fileList = ref<UploadUserFile[]>([]);
+const props = defineProps<{ fileUrls?: string[] }>();
+const emits = defineEmits(["file-changed", "file-removed"]);
+const upload = ref<UploadInstance>();
+const fileList = ref<UploadUserFile[]>([]);
 
-const dialogImageUrl = ref("");
-const dialogVisible = ref(false);
-
-watch(
-    () => props.fileList,
-    (val) => {
-        _fileList.value = val && val.length > 0 ? [...val] : [];
-    },
-    { deep: true }
-);
-
-watch(_fileList, async (val) => {
-    const files = [];
-    for (let i = 0; i < val.length; i++) {
-        files.push(await getFileFromUrl(val[i].url!, val[i].name));
+watchEffect(() => {
+    if (props.fileUrls && props.fileUrls.length > 0) {
+        fileList.value = [...props.fileUrls.map((f) => ({ name: getFileNameFromUrl(f), url: f }))];
+    } else {
+        fileList.value = [];
     }
-    emits("file-changed", files);
+});
+
+watch(fileList, async (val) => {
+    if (val.length > 0) {
+        let files = [];
+        for (let i = 0; i < val.length; i++) {
+            files.push(await getFileFromUrl(val[i].url!, val[i].name));
+        }
+        emits("file-changed", files);
+    } else {
+        emits("file-changed", []);
+    }
 });
 
 const handleRemove: UploadProps["onRemove"] = (uploadFile, uploadFiles) => {
-    _fileList.value = _fileList.value.filter((f) => f.uid !== uploadFile.uid);
-};
-
-const handlePictureCardPreview: UploadProps["onPreview"] = (uploadFile) => {
-    dialogImageUrl.value = uploadFile.url!;
-    dialogVisible.value = true;
+    fileList.value = fileList.value.filter((f) => f.uid !== uploadFile.uid);
 };
 </script>
