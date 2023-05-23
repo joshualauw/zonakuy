@@ -9,6 +9,7 @@ const updateEventSchema = yup.object({
     name: yup.string().required(),
     description: yup.string().required(),
     limit: yup.number().required().min(1),
+    price: yup.number().required(),
     date_range: yup.array(yup.date().required()).min(2).required(),
     tags: yup.array(yup.string().required()).required().min(1),
 });
@@ -28,7 +29,6 @@ async function updateEvent(event: H3Event) {
             start_date: body.date_range[0],
             end_date: body.date_range[1],
             user_id: user.id,
-            price: 0,
             ...exclude(body, ["date_range"]),
         },
     });

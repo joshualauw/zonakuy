@@ -6,7 +6,8 @@ export default function (res: any, errors: Ref<ValidationError[]>, successMessag
     if (res.error.value) {
         const { message, statusCode, data } = res.error.value.data;
         if (statusCode == 400) {
-            errors.value.push(data);
+            errors.value.push(...data);
+            console.log(errors.value);
         } else if (statusCode == 404) {
             throw createError({ statusCode: 404, statusMessage: "not found" });
         } else {

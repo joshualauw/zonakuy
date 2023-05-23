@@ -71,7 +71,6 @@ function closeModal() {
 
 function fileChange(file: UploadUserFile | null) {
     sponsorFile.value = file;
-    console.log(sponsorFile.value);
 }
 
 async function doSaveSponsor() {

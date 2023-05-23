@@ -1,1 +1,0 @@
-//buat pembayaran event

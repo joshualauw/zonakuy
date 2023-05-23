@@ -32,13 +32,8 @@
             </div>
         </div>
     </div>
-    <EventSessionSpeakerCreate
-        @saved="refresh"
-        @closed="speakerModalVisible = false"
-        :edit-id="sessionId"
-        :visible="speakerModalVisible"
-    />
     <EventSessionCreate @saved="refresh" @closed="modalVisible = false" :visible="modalVisible" :edit-id="sessionId" />
+    <EventSessionSpeaker :visible="speakerModalVisible" @closed="speakerModalVisible = false" :edit-id="sessionId" />
     <DeleteModal title="Delete Session" @closed="deleteModalVisible = false" :visible="deleteModalVisible" />
 </template>
 
@@ -47,7 +42,7 @@ definePageMeta({
     layout: "dashboard",
 });
 
-const route = useRoute();
+const route = useRoute("event-id");
 const modalVisible = ref(false);
 const deleteModalVisible = ref(false);
 const speakerModalVisible = ref(false);
@@ -55,7 +50,7 @@ const sessionId = ref("");
 
 const { getAllSession } = sessionController();
 
-const { data: sessions, refresh } = await getAllSession({ id: (route.params as { id: string }).id as string });
+const { data: sessions, refresh } = await getAllSession({ id: route.params.id as string });
 
 function openSpeakerModal(id: string) {
     speakerModalVisible.value = true;

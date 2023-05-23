@@ -1,7 +1,7 @@
 <template>
-    <div class="min-h-screen bg-slate-100">
+    <main class="min-h-screen bg-slate-50">
         <slot></slot>
-    </div>
+    </main>
     <Loader :loading="globalLoading" />
 </template>
 

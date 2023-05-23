@@ -1,6 +1,6 @@
 <template>
     <NuxtLayout name="default">
-        <div class="w-full h-screen flex">
+        <div v-if="!isMobile" class="w-full h-screen flex">
             <ElMenu
                 default-active="0"
                 class="el-menu-vertical-demo h-full space-y-4"
@@ -55,6 +55,10 @@
                 <slot></slot>
             </div>
         </div>
+        <div v-else class="box flex-col h-screen w-screen p-10">
+            <p class="text-lg text-gray-500 mb-4 text-center">Sorry, Event Dashboard cannot be accessed on mobile</p>
+            <ElButton @click="navigateTo('/event')" type="primary">Go Back</ElButton>
+        </div>
     </NuxtLayout>
 </template>
 
@@ -63,8 +67,33 @@ const isCollapse = ref(true);
 const router = useRouter();
 const user = authStore();
 const iconSwap = ref(false);
+const isMobile = ref(false);
+const { getOneEvent } = eventController();
 
 const currentPath = computed(() => router.currentRoute.value.params as { id: string });
+
+onMounted(() => {
+    window.addEventListener("resize", checkIsMobile);
+});
+
+function checkIsMobile() {
+    if (process.client && window.innerWidth < 1200) {
+        isMobile.value = true;
+    } else {
+        isMobile.value = false;
+    }
+}
+
+watchEffect(async () => {
+    if (!currentPath.value.id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw createError({ statusCode: 404, statusMessage: "Invalid ID" });
+    } else {
+        const { data, error } = await getOneEvent(currentPath.value.id);
+        if (error.value || !data.value) {
+            throw createError({ statusCode: 404, statusMessage: "Event Not Found" });
+        }
+    }
+});
 
 const sidebarNav = [
     {

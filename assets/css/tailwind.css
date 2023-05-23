@@ -18,4 +18,7 @@ html {
     .action-button {
         @apply box flex-col p-4 border h-28 text-gray-600 text-sm hover:bg-blue-50 hover:text-blue-400
     }
+    .bg-darken {
+        @apply bg-[rgba(0,0,0,0.6)]
+    }
 }

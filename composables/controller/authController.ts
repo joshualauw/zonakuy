@@ -1,6 +1,6 @@
 import { LoginResponse, LoginSchema } from "~/server/api/auth/login.post";
 import { RegisterResponse, RegisterSchema } from "~/server/api/auth/register.post";
-import { EmailResendResponse, ResendTokenSchema } from "~/server/api/auth/resend.post";
+import { ResendTokenResponse, ResendTokenSchema } from "~/server/api/auth/resend.post";
 import { ResetPasswordResponse, ResetPasswordSchema } from "~/server/api/auth/reset.put";
 import { VerifyEmailResponse, VerifyEmailSchema } from "~/server/api/auth/verify.put";
 import fetcher from "~/utils/fetcher";
@@ -64,7 +64,7 @@ export default function () {
 
         async resendTokenLink(payload: ResendTokenSchema) {
             loading.value = true;
-            const res = await useApi<EmailResendResponse>({
+            const res = await useApi<ResendTokenResponse>({
                 url: "/api/auth/resend",
                 method: "POST",
                 body: payload,

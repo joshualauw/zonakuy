@@ -21,6 +21,7 @@ model User {
   role            Role
   address         String?
   phone           String?
+  balance         Float          @default(0)
   notifications   Notification[]
   bio             String?
   is_banned       Boolean        @default(false)
@@ -145,11 +146,12 @@ model Chat {
 
 model Transaction {
   id             String            @id @default(auto()) @map("_id") @db.ObjectId
-  code           String            @unique
-  email          String
+  account_number String            @unique
+  email          String            @unique
   address        String
   phone          String
   country        String
+  city           String
   status         TransactionStatus
   payment_method String
   detail         Json

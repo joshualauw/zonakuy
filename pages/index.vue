@@ -14,7 +14,7 @@
                     <p class="my-8 text-gray-600 text-lg">
                         The best event platform for hybrid and event meeting, we will wait for your arrivance!
                     </p>
-                    <ElButton @click="goIn" type="success" size="large">Get Started</ElButton>
+                    <ElButton @click="navigateTo('/event')" type="success" size="large">Get Started</ElButton>
                 </div>
             </div>
         </div>
@@ -50,14 +50,6 @@ definePageMeta({
 });
 
 const user = authStore();
-
-function goIn() {
-    if (user.value) {
-        navigateTo("/event");
-    } else {
-        navigateTo("/login");
-    }
-}
 
 const specialityItems = [
     {

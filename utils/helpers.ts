@@ -1,5 +1,13 @@
 import dayjs from "dayjs";
 
+export function exclude<T, Key extends keyof T>(obj: T, keys: Key[]): Omit<T, Key> {
+    const newObj = { ...obj };
+    for (const key of keys) {
+        delete newObj[key];
+    }
+    return newObj;
+}
+
 export function generateErrors(errors: ValidationError[]): Record<string, string> {
     const formattedErrors = {};
     errors.forEach((error) => {
@@ -43,3 +51,16 @@ export const makeRange = (start: number, end: number) => {
     }
     return result;
 };
+
+export function wordSpacer(str: string, wordLength: number = 100) {
+    const words = str.split(" ");
+    const result = [];
+    for (let i = 0; i < words.length; i++) {
+        result.push(words[i]);
+
+        if ((i + 1) % wordLength === 0) {
+            result.push("<br><br>");
+        }
+    }
+    return result.join(" ");
+}

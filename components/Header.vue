@@ -35,7 +35,7 @@
                 </template>
             </ElDropdown>
         </div>
-        <button @click="navigateTo('/login')" v-else class="text-white">Log In</button>
+        <button @click="navigateTo('/login')" v-else class="text-white">Sign Up</button>
     </div>
 </template>
 

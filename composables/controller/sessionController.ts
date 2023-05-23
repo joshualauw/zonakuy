@@ -1,5 +1,4 @@
 import { GetOneSessionResponse } from "~/server/api/session/[id].get";
-import { SaveSpeakerResponse, SaveSpeakerSchema } from "~/server/api/session/[id].patch";
 import { UpdateSessionResponse, UpdateSessionSchema } from "~/server/api/session/[id].put";
 import { GetAllSessionQuery, GetAllSessionResponse } from "~/server/api/session/index.get";
 import { CreateSessionResponse, CreateSessionSchema } from "~/server/api/session/index.post";
@@ -31,26 +30,6 @@ export default function () {
         async createSession(payload: CreateSessionSchema) {
             loading.value = true;
             const res = await useApi<CreateSessionResponse>({ url: `/api/session`, method: "POST", body: payload });
-            loading.value = false;
-            fetcher(res, errors);
-
-            return res;
-        },
-
-        async saveSpeaker(payload: SaveSpeakerSchema, editId: string) {
-            const form = new FormData();
-            payload.forEach((s, idx) => {
-                form.append(`speaker[avatar][${idx}]`, s.avatar);
-                form.append(`speaker[name][${idx}]`, s.name);
-                form.append(`speaker[role][${idx}]`, s.role);
-            });
-
-            loading.value = true;
-            const res = await useApi<SaveSpeakerResponse>({
-                url: `/api/session/${editId}`,
-                method: "PATCH",
-                body: form,
-            });
             loading.value = false;
             fetcher(res, errors);
 

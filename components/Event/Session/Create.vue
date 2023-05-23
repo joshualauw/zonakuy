@@ -31,7 +31,7 @@
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="$emit('closed')">Cancel</el-button>
-                    <el-button type="primary" @click="doSaveSession">Save</el-button>
+                    <el-button type="primary" @click="doSaveSession" :loading="loading">Save</el-button>
                 </span>
             </template>
         </ElDialog>
@@ -46,7 +46,7 @@ const emits = defineEmits(["closed", "saved"]);
 const isVisible = ref(props.visible);
 const globalLoading = loadingStore();
 
-const { createSession, updateSession, getOneSession, errors } = sessionController();
+const { createSession, updateSession, getOneSession, errors, loading } = sessionController();
 const route = useRoute();
 
 watch(

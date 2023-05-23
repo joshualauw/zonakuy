@@ -20,12 +20,6 @@
                         <EventCreateGallery />
                     </ElScrollbar>
                 </ElTabPane>
-                <ElTabPane label="Payment" name="payment" class="pl-8 overflow-hidden h-[630px]">
-                    <ElScrollbar class="card rounded-md">
-                        <h3 class="text-lg font-semibold mb-4">Enable Payment</h3>
-                        <EventCreatePayment />
-                    </ElScrollbar>
-                </ElTabPane>
                 <ElTabPane label="Others" name="others" class="pl-8 overflow-hidden h-[630px]">
                     <ElScrollbar class="card rounded-md">
                         <h3 class="text-lg font-semibold mb-4">Others</h3>

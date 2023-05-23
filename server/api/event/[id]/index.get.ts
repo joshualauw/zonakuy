@@ -4,9 +4,8 @@ import prisma from "~/server/utils/prismaClient";
 
 async function getOneEvent(event: H3Event) {
     const params = event.context.params as { id: string };
-    console.log(params);
 
-    const _event = await prisma.event.findFirst({ where: { id: params.id } });
+    const _event = await prisma.event.findFirst({ where: { id: params.id }, include: { user: true } });
     if (!_event) throw createError({ statusCode: 404, message: "event not found" });
 
     return { data: _event, message: "event fetched successfully" };

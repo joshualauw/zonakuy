@@ -1,6 +1,5 @@
 import { CreateEventResponse, CreateEventSchema } from "~/server/api/event/index.post";
 import { GetAllEventQuery, GetAllEventResponse } from "./../../server/api/event/index.get";
-import fetcher from "~/utils/fetcher";
 import { GetOneEventResponse } from "~/server/api/event/[id]/index.get";
 import { UpdateEventSchema } from "~/server/api/event/[id]/index.put";
 import { UpdateEventFileResponse, UpdateEventFileSchema } from "~/server/api/event/[id]/file.patch";
@@ -19,7 +18,6 @@ export default function () {
             const res = await useApi<GetAllEventResponse>({
                 url: "/api/event",
                 query,
-                lazy: true,
             });
             loading.value = false;
 

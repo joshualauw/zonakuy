@@ -27,7 +27,7 @@
             </ClientOnly>
             <div class="float-right">
                 <ElButton @click="addField" type="primary" size="large">+ Add Field</ElButton>
-                <ElButton @click="saveForm" type="success" size="large">Save</ElButton>
+                <ElButton @click="doSaveForm" :loading="loading" type="success" size="large">Save</ElButton>
             </div>
         </ElTabPane>
         <ElTabPane label="Responses" name="response">
@@ -40,9 +40,23 @@
 <script setup lang="ts">
 import { FormField } from "@prisma/client";
 
+type PreFormField = FormField & {
+    id: string;
+    file: File | null;
+};
+
+const { saveForm, getOneForm, loading } = formController();
+const route = useRoute("event-id-dashboard-form-fid");
 const activeTab = ref("form-field");
 const formName = ref("");
-const formFields = ref<(FormField & { id: string })[]>([]);
+const formFields = ref<PreFormField[]>([]);
+
+const { data: form, error } = await getOneForm(route.params.fid);
+if (form.value && !error.value) {
+    const { name, fields } = form.value.data;
+    formName.value = name;
+    formFields.value.push(...fields.map((f) => ({ ...f, id: genId(5), file: null })));
+}
 
 function addField() {
     formFields.value.push({
@@ -52,14 +66,16 @@ function addField() {
         required: false,
         options: [],
         image: null,
+        file: null,
     });
 }
 
-function saveForm() {
-    console.log(formFields.value);
+async function doSaveForm() {
+    const fields = formFields.value.map((f) => exclude({ ...f, image: f.file as any }, ["id", "file"]));
+    await saveForm({ name: formName.value, fields }, route.params.fid);
 }
 
-function onFieldChange(data: FormField & { id: string }) {
+function onFieldChange(data: PreFormField) {
     const formIdx = formFields.value.findIndex((f) => f.id === data.id);
     formFields.value[formIdx] = data;
 }

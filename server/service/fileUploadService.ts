@@ -1,4 +1,4 @@
-import { Speaker } from "@prisma/client";
+import { Form, Speaker } from "@prisma/client";
 import prisma from "../utils/prismaClient";
 import { fileDelete, fileUpload } from "../utils/uploadFile";
 
@@ -41,4 +41,21 @@ export async function uploadEventBannerAndGallery(event_id: string, banner: any,
     }
 
     return await prisma.event.update({ where: { id: event_id }, data: { banner: secure_url, gallery: newGallery } });
+}
+
+export async function uploadFormImages(form: Form, images: { file: { filepath: string }; idx: number }[]) {
+    await fileDelete(`zonakuy/form/${form.id}/fields`);
+    for (let i in images) {
+        const { secure_url } = await fileUpload(
+            images[i].file.filepath,
+            `zonakuy/form/${form.id}/fields/${images[i].idx}`
+        );
+        form.fields[images[i].idx].image = secure_url;
+    }
+
+    return await prisma.form.update({ where: { id: form.id }, data: { fields: form.fields } });
+}
+
+export async function deleteFormImages(form_id: string) {
+    await fileDelete(`zonakuy/form/${form_id}/fields`);
 }

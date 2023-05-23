@@ -15,6 +15,8 @@ export default defineNuxtConfig({
         CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
         CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
         CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+        XENDIT_PUBLIC_KEY: process.env.XENDIT_PUBLIC_KEY,
+        XENDIT_SECRET_KEY: process.env.XENDIT_SECRET_KEY,
         public: {
             BASE_URL: process.env.BASE_URL,
         },

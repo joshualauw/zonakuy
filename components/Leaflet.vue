@@ -1,6 +1,6 @@
 <template>
     <ClientOnly>
-        <div ref="leafletMap" :class="class"></div>
+        <div v-show="show" ref="leafletMap" :class="class"></div>
     </ClientOnly>
 </template>
 
@@ -12,7 +12,8 @@ const { $leaflet } = useNuxtApp();
 const props = defineProps<{
     latitude: number;
     longitude: number;
-    class: string;
+    class?: string;
+    show?: boolean;
 }>();
 
 const leafletMap = ref();

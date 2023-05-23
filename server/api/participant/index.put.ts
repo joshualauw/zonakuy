@@ -1,1 +1,0 @@
-//invite partisipan / tangan kanan
